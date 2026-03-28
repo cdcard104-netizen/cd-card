@@ -11,155 +11,58 @@
 
     <style>
         :root { 
-            --bg: #0d1117; 
-            --card: #161b22; 
-            --accent: #00ff88; 
-            --text-main: #ffffff; 
-            --text-muted: #8b949e; 
-            --border: #30363d; 
-            --error: #ff4d4d;
+            --bg: #0d1117; --card: #161b22; --accent: #00ff88; --text-main: #ffffff; 
+            --text-muted: #8b949e; --border: #30363d; --error: #ff4d4d;
         }
-
-        body { 
-            background: var(--bg); 
-            color: var(--text-main); 
-            font-family: 'Segoe UI', Tahoma, sans-serif; 
-            margin: 0; padding: 10px; padding-bottom: 100px; line-height: 1.6;
-        }
-
-        /* تصغير شعار الهيدر */
-        .app-header {
-            display: flex; align-items: center; justify-content: center;
-            padding: 15px 0; background: var(--card); border-bottom: 1px solid var(--border); margin-bottom: 20px;
-        }
-        .app-logo {
-            width: 60px; height: 60px; /* تم التصغير بنسبة 70% تقريباً */
-            background: url('cd.jpg') no-repeat center center / contain;
-            border-radius: 50%; margin-left: 10px;
-        }
+        body { background: var(--bg); color: var(--text-main); font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; padding: 10px; padding-bottom: 100px; line-height: 1.6; }
+        .app-header { display: flex; align-items: center; justify-content: center; padding: 15px 0; background: var(--card); border-bottom: 1px solid var(--border); margin-bottom: 20px; }
+        .app-logo { width: 60px; height: 60px; background: url('cd.jpg') no-repeat center center / contain; border-radius: 50%; margin-left: 10px; }
         .app-title { font-size: 20px; font-weight: 800; color: var(--accent); }
-
-        .stat-card {
-            background: var(--card); border-radius: 16px; padding: 18px 22px; margin-bottom: 15px;
-            border: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between;
-        }
+        .stat-card { background: var(--card); border-radius: 16px; padding: 18px 22px; margin-bottom: 15px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
         .stat-card-left { display: flex; flex-direction: column; text-align: right; }
-        .stat-card-right { 
-            width: 40px; height: 40px; border-radius: 12px; background: rgba(0,255,136,0.1); 
-            color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 20px; 
-        }
+        .stat-card-right { width: 40px; height: 40px; border-radius: 12px; background: rgba(0,255,136,0.1); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 20px; }
         .stat-title { font-size: 18px; font-weight: 700; color: var(--text-main); }
         .stat-value { font-size: 11px; color: var(--text-muted); }
-
-        .services-section { 
-            background: var(--card); padding: 25px; border-radius: 20px; border: 1px solid var(--border); margin-bottom: 25px; 
-        }
-        .form-group { margin-bottom: 20px; }
+        .services-section { background: var(--card); padding: 25px; border-radius: 20px; border: 1px solid var(--border); margin-bottom: 25px; }
         label { display: block; margin-bottom: 10px; font-size: 14px; color: var(--accent); font-weight: 600; }
-        select, input, textarea { 
-            width: 100%; background: rgba(0,0,0,0.2); border: 1px solid var(--border); color: var(--text-main); 
-            padding: 16px; border-radius: 12px; box-sizing: border-box; outline: none; font-size: 15px;
-        }
-
-        .price-box {
-            text-align: center; padding: 20px; background: rgba(0,0,0,0.3); border-radius: 15px; 
-            margin-bottom: 25px; border: 1px solid var(--accent);
-        }
-
-        .btn-main { 
-            width: 100%; background: var(--accent); color: #000; border: none; padding: 18px; 
-            border-radius: 14px; font-weight: 800; cursor: pointer; font-size: 17px;
-        }
-
-        /* آية الكرسي */
-        .quran-container { 
-            text-align: center; padding: 30px; border-radius: 20px; border: 1px dashed rgba(0,255,136,0.2); 
-            margin-top: 30px; background: rgba(0,255,136,0.02);
-        }
-        .quran-text { font-size: 110%; line-height: 2.2; color: var(--text-main); font-weight: 600; }
-
-        /* تصغير صورة الشحن بنسبة 70% */
-        .charging-img { 
-            width: 30%; /* تم تحديد العرض ليكون أصغر بكثير ومتناسق مع النص */
-            max-width: 120px; 
-            display: block; margin: 0 auto 20px; border-radius: 10px; 
-        }
-        .phone-num { background: #000; padding: 12px; border-radius: 10px; margin: 5px 0; border: 1px solid var(--accent); color: var(--accent); text-align: center; font-weight: bold; }
-
-
-
-.nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(22,27,34,0.98); display: flex; padding: 12px 0; border-top: 1px solid var(--border); z-index: 1000; }
+        select, input, textarea { width: 100%; background: rgba(0,0,0,0.2); border: 1px solid var(--border); color: var(--text-main); padding: 16px; border-radius: 12px; box-sizing: border-box; outline: none; font-size: 15px; margin-bottom: 15px; }
+        .price-box { text-align: center; padding: 20px; background: rgba(0,0,0,0.3); border-radius: 15px; margin-bottom: 25px; border: 1px solid var(--accent); }
+        .btn-main { width: 100%; background: var(--accent); color: #000; border: none; padding: 18px; border-radius: 14px; font-weight: 800; cursor: pointer; font-size: 17px; }
+        .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(22,27,34,0.98); display: flex; padding: 12px 0; border-top: 1px solid var(--border); z-index: 1000; }
         .nav-item { color: var(--text-muted); text-align: center; font-size: 11px; flex: 1; cursor: pointer; }
         .nav-item.active { color: var(--accent); font-weight: bold; }
         .page { display: none; } .page.active { display: block; }
+        .ref-box { background: #000; padding: 10px; border-radius: 8px; border: 1px dashed var(--accent); font-size: 12px; word-break: break-all; margin-top: 10px; color: var(--accent); }
     </style>
-</head>
-<body>
-
-    <div class="app-header">
-        <div class="app-logo"></div>
-        <div class="app-title">CD-Card</div>
-    </div>
-
-    <div id="mainContent">
-        <div id="homePage" class="page active">
-            <div class="user-stats">
-                <div class="stat-card">
-                    <div class="stat-card-left"><span id="uName" class="stat-title">...</span><span class="stat-value">اسم المستخدم</span></div>
-                    <div class="stat-card-right">👤</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-card-left"><span id="ordersCount" class="stat-title">0</span><span class="stat-value">إجمالي الطلبات</span></div>
-                    <div class="stat-card-right">📋</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-card-left"><span id="uSpent" class="stat-title">0.00</span><span class="stat-value">دينار ليبي | ينفق</span></div>
-                    <div class="stat-card-right">💸</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-card-left"><span id="uBalance" class="stat-title">0.00</span><span class="stat-value">دينار ليبي | الرصيد المتوفر</span></div>
-                    <div class="stat-card-right">💰</div>
-                </div>
+</head<div class="stat-card"><div class="stat-card-left"><span id="uBalance" class="stat-title">0.00</span><span class="stat-value">دينار | الرصيد</span></div><div class="stat-card-right">💰</div></div>
             </div>
 
             <div class="services-section">
-                <div class="form-group"><label>الفئات</label><select id="catSelect" onchange="updateServiceList()"></select></div>
-                <div class="form-group"><label>الخدمات</label><select id="serviceSelect" onchange="updateServiceDetails()"></select></div>
-                <div class="form-group"><label>الوصف</label><textarea id="serviceDesc" readonly></textarea></div>
-                <div class="form-group"><label>الرابط / الآيدي</label><input type="text" id="orderLink" placeholder="أدخل الرابط هنا..."></div>
-                <div class="form-group"><label>الكمية</label><input type="number" id="orderQty" oninput="calculateTotal()"></div>
-                <div class="price-box"><small>السعر الإجمالي:</small><br><span id="totalPrice" style="color:var(--accent); font-size:28px; font-weight:bold;">0.00 دينار ليبي</span></div>
-                <button class="btn-main" onclick="submitOrder()">تأكيد الطلب الآن ✅</button>
-            </div>
-
-            <div class="quran-container">
-                <div class="quran-text">
-                    اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ ۚ لَّهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ ۗ مَن ذَا الَّذِي يَشْفَعُ عِندَهُ إِلَّا بِإِذْنِهِ ۚ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ ۖ وَلَا يُحِيطُونَ بِشَيْءٍ مِّنْ عِلْمِهِ إِلَّا بِمَا شَاءَ ۚ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ ۖ وَلَا يَئُودُهُ حِفْظُهُمَا ۚ وَهُوَ الْعَلِيُّ الْعَظِيمُ
-                </div>
+                <label>الفئات</label><select id="catSelect" onchange="updateServiceList()"></select>
+                <label>الخدمات</label><select id="serviceSelect" onchange="updateServiceDetails()"></select>
+                <label>الرابط / الآيدي</label><input type="text" id="orderLink" placeholder="أدخل الرابط هنا...">
+                <label>الكمية</label><input type="number" id="orderQty" oninput="calculateTotal()">
+                <div class="price-box"><span id="totalPrice" style="color:var(--accent); font-size:28px; font-weight:bold;">0.00 د.ل</span></div>
+                <button class="btn-main" onclick="submitOrder()">تأكيد الطلب ✅</button>
             </div>
         </div>
 
         <div id="rechargePage" class="page">
-            <div class="services-section">
-                <h3 style="text-align:center; color:var(--accent);">💳 شحن الرصيد آلياً</h3>
-                <img src="lb.jpg" alt="شعار الشحن" class="charging-img"> <p style="text-align:center; font-size:14px; margin-bottom:15px;">حول القيمة للأرقام التالية ثم أكمل البيانات:</p>
-                <div class="phone-num">0912377291</div>
-                <div class="phone-num">0920414760</div>
-                <div class="form-group"><label>رقمك المحول منه</label><input type="number" id="senderPhone" placeholder="09xxxxxxxx"></div>
-                <div class="form-group"><label>القيمة المحولة (د.ل)</label><input type="number" id="chargeAmount" placeholder="0.00"></div>
-                <button class="btn-main" onclick="sendWhatsAppRecharge()">تأكيد الشحن عبر الواتساب 💬</button>
-            </div>
+            <div class="services-section"><h3>💳 شحن الرصيد</h3><div class="phone-num">0912377291</div><button class="btn-main" onclick="sendWhatsAppRecharge()">تأكيد الشحن واتساب</button></div>
         </div>
 
-        <div id="ordersPage" class="page"><div class="services-section"><h3>📦 سجل طلباتي</h3><div id="ordersList"></div></div></div>
-
         <div id="settingsPage" class="page">
-            <div class="services-section"><h3>⚙️ الإعدادات</h3><p>المستخدم: <span id="setUName">...</span></p><button class="btn-main" style="background:var(--error); color:#fff;" onclick="auth.signOut()">خروج</button></div>
+            <div class="services-section">
+                <h3>⚙️ الإعدادات</h3>
+                <p>رابط الإحالة الخاص بك (شارك واربح):</p>
+                <div id="refLink" class="ref-box">جاري التحميل...</div>
+                <br>
+                <button class="btn-main" style="background:var(--error); color:#fff;" onclick="logout()">خروج</button>
+            </div>
         </div>
 
         <div class="nav-bar">
             <div class="nav-item active" onclick="nav('homePage', this)">🏠<br>الرئيسية</div>
-            <div class="nav-item" onclick="nav('ordersPage', this)">📦<br>طلباتي</div>
             <div class="nav-item" onclick="nav('rechargePage', this)">💳<br>الشحن</div>
             <div class="nav-item" onclick="nav('settingsPage', this)">⚙️<br>الإعدادات</div>
         </div>
@@ -170,7 +73,11 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore(); const auth = firebase.auth();
 
+    // تفعيل بقاء الدخول لمدة شهر
+    auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+
     let currentUserData = {};
+    const API_KEY = "c78f4c8535085a0e53ce6773681d5704017073240ee0252ec5dd17d227d8b12f";
 
     auth.onAuthStateChanged(user => {
         if (user) {
@@ -178,20 +85,29 @@
                 currentUserData = doc.data();
                 document.getElementById('uName').innerText = currentUserData.username;
                 document.getElementById('uBalance').innerText = Number(currentUserData.balance).toFixed(2);
-                document.getElementById('uSpent').innerText = Number(currentUserData.spent).toFixed(2);
-                document.getElementById('setUName').innerText = currentUserData.username;
+                document.getElementById('refLink').innerText = window.location.origin + "/?ref=" + user.uid;
             });
-            db.collection('orders').where('userId', '==', user.uid).get().then(snap => document.getElementById('ordersCount').innerText = snap.size);
-            loadServices();
+            loadServicesFromAPI();
         } else { window.location.href = "login.html"; }
     });
 
-    async function loadServices() {
-        const snap = await db.collection('services').get(); window.allServices = []; snap.forEach(doc => window.allServices.push({id: doc.id, ...doc.data()}));
-        const cats = [...new Set(window.allServices.map(s => s.category))];
-        const catS = document.getElementById('catSelect'); catS.innerHTML = "";
-        cats.forEach(c => catS.innerHTML += <option value="${c}">${c}</option>);
-        updateServiceList();
+    async function loadServicesFromAPI() {
+        const proxy = "https://api.allorigins.win/get?url=";
+        const target = encodeURIComponent(https://ms1.shop/api/v2?action=services&key=${API_KEY});
+        try {
+            const res = await fetch(proxy + target);
+            const data = await res.json();
+            const rawServices = JSON.parse(data.contents);
+            
+            window.allServices = rawServices.map(s => ({
+                id: s.service, name: s.name, category: s.category, 
+                finalPrice: (parseFloat(s.rate) * 5.5).toFixed(2) // ربحك (سعر المزود * 5.5)
+            }));
+            const cats = [...new Set(window.allServices.map(s => s.category))];
+            const catS = document.getElementById('catSelect'); catS.innerHTML = "";
+            cats.forEach(c => catS.innerHTML += <option value="${c}">${c}</option>);
+            updateServiceList();
+        } catch(e) { console.error("API Error"); }
     }
 
     function updateServiceList() {
@@ -203,9 +119,51 @@
 
     function updateServiceDetails() {
         window.selectedService = window.allServices.find(s => s.id === document.getElementById('serviceSelect').value);
-        if(window.selectedService) {
-            document.getElementById('serviceDesc').value = window.selectedService.description || "وصف الخدمة...";
-            document.getElementById('orderQty').value = window.selectedService.category.includes('ببجي') ? 1 : 1000;
-            calculateTotal();
+        calculateTotal();
+    }
+
+    function calculateTotal() {
+        const q = parseFloat(document.getElementById('orderQty').value) || 1;
+        const p = parseFloat(window.selectedService.finalPrice) || 0;
+        const isGame = window.selectedService.category.includes('ببجي') || window.selectedService.category.includes('فري');
+        const total = isGame ? p : (q/1000)*p;
+        document.getElementById('totalPrice').innerText = total.toFixed(2) + " د.ل";
+    }
+
+    async function submitOrder() {
+        const total = parseFloat(document.getElementById('totalPrice').innerText);
+        if(currentUserData.balance < total) return alert("❌ رصيدك لا يكفي");
+        
+        if(confirm(خصم ${total} د.ل من رصيدك؟)) {
+            await db.collection('orders').add({
+                userId: auth.currentUser.uid, serviceName: window.selectedService.name,
+                link: document.getElementById('orderLink').value, qty: document.getElementById('orderQty').value,
+                cost: total, status: "قيد الانتظار", date: new Date().toLocaleString('ar-LY')
+            });
+            await db.collection('users').doc(auth.currentUser.uid).update({ balance: firebase.firestore.FieldValue.increment(-total) });
+            alert("✅ تم الطلب");
         }
     }
+
+    function nav(id, el) { 
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+        el.classList.add('active');
+    }
+
+    function logout() { auth.signOut().then(() => { localStorage.clear(); window.location.href="login.html"; }); }
+</script>
+</body>
+</html>
+<body>
+
+    <div class="app-header">
+        <div id="homePage" class="page active">
+        <div class="app-logo"></div>
+        <div class="app-title">CD-Card</div>
+    </div>
+
+    <div id="mainContent">
+            <div class="user-stats">
+                <div class="stat-card"><div class="stat-card-left"><span id="uName" class="stat-title">...</span><span class="stat-value">المستخدم</span></div><div class="stat-card-right">👤</div></div>
