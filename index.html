@@ -20,37 +20,28 @@
             margin: 0; padding: 10px; padding-bottom: 100px; line-height: 1.6;
         }
 
-        /* الهيدر */
         .app-header {
             display: flex; align-items: center; justify-content: center;
             padding: 15px 0; background: var(--card); border-bottom: 1px solid var(--border); margin-bottom: 20px;
         }
         .app-logo {
-            width: 60px; height: 60px;
-            background: url('cd.jpg') no-repeat center center / contain;
+            width: 60px; height: 60px; background: url('cd.jpg') no-repeat center center / contain;
             border-radius: 50%; margin-left: 10px; border: 2px solid var(--accent);
         }
         .app-title { font-size: 20px; font-weight: 800; color: var(--accent); }
 
-        /* البطاقات الإحصائية */
         .stat-card {
             background: var(--card); border-radius: 16px; padding: 18px 22px; margin-bottom: 15px;
             border: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between;
         }
-        .stat-card-left { display: flex; flex-direction: column; text-align: right; }
-        .stat-card-right { 
-            width: 40px; height: 40px; border-radius: 12px; background: rgba(0,255,136,0.1); 
-            color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 20px; 
-        }
-
-        /* الأقسام */
+        
         .services-section { 
             background: var(--card); padding: 25px; border-radius: 20px; border: 1px solid var(--border); margin-bottom: 25px; 
         }
         label { display: block; margin-bottom: 10px; font-size: 14px; color: var(--accent); font-weight: 600; }
-        select, input, textarea { 
+        select, input { 
             width: 100%; background: rgba(0,0,0,0.2); border: 1px solid var(--border); color: var(--text-main); 
-            padding: 16px; border-radius: 12px; box-sizing: border-box; outline: none; font-size: 15px; margin-bottom: 15px;
+            padding: 16px; border-radius: 12px; box-sizing: border-box; outline: none; margin-bottom: 15px;
         }
 
         .price-box {
@@ -63,8 +54,7 @@
             border-radius: 14px; font-weight: 800; cursor: pointer; font-size: 17px;
         }
 
-        /* شريط التنقل */
-        .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(22,27,34,0.98); display: flex; padding: 12px 0; border-top: 1px solid var(--border); z-index: 1000; }
+        .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--card); display: flex; padding: 12px 0; border-top: 1px solid var(--border); z-index: 1000; }
         .nav-item { color: var(--text-muted); text-align: center; font-size: 11px; flex: 1; cursor: pointer; }
         .nav-item.active { color: var(--accent); font-weight: bold; }
         .page { display: none; } .page.active { display: block; }
@@ -79,21 +69,14 @@
 
     <div id="mainContent">
         <div id="homePage" class="page active">
-            <div class="user-stats">
-                <div class="stat-card-left"><span id="uName" style="font-size:18px; font-weight:700;">...</span><span style="font-size:11px; color:var(--text-muted);">المستخدم</span></div>
-                    <div class="stat-card-right">👤</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-card-left"><span id="uBalance" style="font-size:18px; font-weight:700;">0.00</span><span style="font-size:11px; color:var(--text-muted);">دينار | الرصيد</span></div>
-                    <div class="stat-card-right">💰</div>
-                </div>
+            <div class="stat-card">
+                <div><span id="uName" style="font-weight:700;">جاري التحميل...</span><br><small style="color:var(--text-muted)">المستخدم</small></div>
+                <div style="text-align:left;"><span id="uBalance" style="color:var(--accent); font-weight:700;">0.00</span> د.ل<br><small style="color:var(--text-muted)">الرصيد</small></div>
             </div>
 
             <div class="services-section">
-                <label>الفئة</label>
-                <select id="catSelect" onchange="updateServiceList()"><option>جاري تحميل 902 خدمة...</option></select>
-                
-                <label>الخدمة</label>
+                <label>اختر الفئة</label>
+                <label>اختر الخدمة</label>
                 <select id="serviceSelect" onchange="updateServiceDetails()"></select>
                 
                 <label>الرابط / الآيدي</label>
@@ -106,24 +89,23 @@
                     <small>السعر الإجمالي:</small><br>
                     <span id="totalPrice" style="color:var(--accent); font-size:28px; font-weight:bold;">0.00 د.ل</span>
                 </div>
-                <button class="btn-main" id="orderBtn" onclick="processOrder()">تأكيد الطلب الآن ✅</button>
+                <button class="btn-main" id="orderBtn" onclick="processOrder()">تأكيد الطلب 🚀</button>
             </div>
         </div>
 
         <div id="rechargePage" class="page">
-            <div class="services-section">
-                <h3 style="text-align:center; color:var(--accent);">💳 شحن الرصيد آلياً</h3>
-                <p style="text-align:center;">حول القيمة للرقم التالي:</p>
-                <div style="background:#000; padding:15px; border-radius:10px; text-align:center; color:var(--accent); font-weight:bold; border:1px solid var(--accent);">0912377291</div>
+            <div class="services-section" style="text-align:center;">
+                <h3 style="color:var(--accent);">💳 شحن الرصيد</h3>
+                <p>حول القيمة للرقم التالي:</p>
+                <div style="background:#000; padding:15px; border-radius:10px; color:var(--accent); border:1px solid var(--accent);">0912377291</div>
                 <br>
-                <button class="btn-main" onclick="window.open('https://wa.me/218912377291')">تأكيد الشحن عبر الواتساب 💬</button>
+                <button class="btn-main" onclick="window.open('https://wa.me/218912377291')">تواصل لتأكيد الشحن 💬</button>
             </div>
         </div>
 
         <div id="settingsPage" class="page">
             <div class="services-section">
                 <h3>⚙️ الإعدادات</h3>
-                <p>المستخدم: <span id="setUName">...</span></p>
                 <button class="btn-main" style="background:var(--error); color:#fff;" onclick="logout()">تسجيل خروج</button>
             </div>
         </div>
@@ -140,29 +122,29 @@
     const firebaseConfig = { apiKey: "AIzaSyARNJOPAycWU3YJdZSBN1d9uoLrvso3i4Y", authDomain: "cd-card-87365.firebaseapp.com", projectId: "cd-card-87365", storageBucket: "cd-card-87365.firebasestorage.app", messagingSenderId: "397926299412", appId: "1:397926299412:web:efbe9ae9aae29df368f401" };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore(); const auth = firebase.auth();
-    auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
 
     const API_KEY = "c78f4c8535085a0e53ce6773681d5704017073240ee0252ec5dd17d227d8b12f";
     let currentUserData = {};
     let allServices = [];
 
-    // 2. مراقبة المستخدم
+    // 2. التحقق من المستخدم
     auth.onAuthStateChanged(user => {
         if (user) {
             db.collection('users').doc(user.uid).onSnapshot(doc => {
                 currentUserData = doc.data();
                 document.getElementById('uName').innerText = currentUserData.username;
                 document.getElementById('uBalance').innerText = Number(currentUserData.balance).toFixed(2);
-                document.getElementById('setUName').innerText = currentUserData.username;
             });
             loadServicesFromAPI();
         } else { window.location.href = "login.html"; }
     });
 
-    // 3. جلب الخدمات من الـ API (توفير القراءات)
+    // 3. جلب الـ 902 خدمة (بدون Firebase)
     async function loadServicesFromAPI() {
+        const catS = document.getElementById('catSelect');
         const proxy = "https://api.allorigins.win/get?url=";
         const target = encodeURIComponent(https://ms1.shop/api/v2?action=services&key=${API_KEY});
+        
         try {
             const res = await fetch(proxy + target);
             const data = await res.json();
@@ -171,66 +153,61 @@
             allServices = raw.map(s => {
                 let rate = parseFloat(s.rate);
                 let cat = s.category.toLowerCase();
-                let profit = 0.15; // ربح افتراضي
+                let profit = 0.15;
 
-                if(cat.includes('ببجي') || cat.includes('ألعاب')) profit = 0.10; // 10% ألعاب
-                else if(cat.includes('متابعين') || cat.includes('رشق')) profit = 0.30; // 30% رشق
-                else if(cat.includes('اشتراك')) profit = 0.13; // 13% اشتراكات
-
-                return { id: s.service, name: s.name, category: s.category, finalPrice: (rate * (1 + profit)).toFixed(2) };
+                if(cat.includes('ببجي') || cat.includes('ألعاب')) profit = 0.10;
+                else if(cat.includes('متابعين') || cat.includes('رشق')) profit = 0.30;
+                else if(cat.includes('اشتراك')) profit = 0.13;
+                    return { id: s.service, name: s.name, category: s.category, price: (rate * (1 + profit)).toFixed(2) };
             });
 
             const cats = [...new Set(allServices.map(s => s.category))];
-            const catS = document.getElementById('catSelect');
             catS.innerHTML = cats.map(c => <option value="${c}">${c}</option>).join('');
             updateServiceList();
-        } catch(e) { console.error("API Error"); }
+        } catch(e) { catS.innerHTML = "<option>فشل في تحميل الخدمات</option>"; }
     }
 
     function updateServiceList() {
         const cat = document.getElementById('catSelect').value;
-        const sS = document.getElementById('serviceSelect');
         const filtered = allServices.filter(s => s.category === cat);
-        sS.innerHTML = filtered.map(s => <option value="${s.id}">${s.name} - ${s.finalPrice} د.ل</option>).join('');
+        document.getElementById('serviceSelect').innerHTML = filtered.map(s => <option value="${s.id}">${s.name} - ${s.price} د.ل</option>).join('');
         updateServiceDetails();
     }
 
     function updateServiceDetails() {
-        window.selectedService = allServices.find(s => s.id === document.getElementById('serviceSelect').value);
+        window.selected = allServices.find(s => s.id === document.getElementById('serviceSelect').value);
         calculateTotal();
     }
 
     function calculateTotal() {
-        if(!window.selectedService) return;
+        if(!window.selected) return;
         const q = parseFloat(document.getElementById('orderQty').value) || 1;
-        const p = parseFloat(window.selectedService.finalPrice);
-        const isGame = window.selectedService.category.includes('ببجي') || window.selectedService.category.includes('ألعاب');
-        const total = isGame ? (p * q) : (q / 1000) * p;
+        const isGame = window.selected.category.includes('ببجي') || window.selected.category.includes('ألعاب');
+        const total = isGame ? (window.selected.price * q) : (q / 1000) * window.selected.price;
         document.getElementById('totalPrice').innerText = total.toFixed(2) + " د.ل";
     }
 
-    // 4. تنفيذ الطلب (خصم من Firebase + إرسال للمزود)
+    // 4. تنفيذ الطلب (Firebase للرسم + API للمزود)
     async function processOrder() {
         const total = parseFloat(document.getElementById('totalPrice').innerText);
         const link = document.getElementById('orderLink').value;
-        const qty = document.getElementById('orderQty').value;
-
         if (currentUserData.balance < total) return alert("❌ رصيدك لا يكفي!");
-        if (!link) return alert("❌ أدخل الآيدي!");
+        if (!link) return alert("❌ أدخل البيانات أولاً!");
 
-        if (confirm(خصم ${total} د.ل وإرسال الطلب للمزود؟)) {
+        if (confirm(سيتم خصم ${total} د.ل من رصيدك. تأكيد؟)) {
             document.getElementById('orderBtn').disabled = true;
             try {
-                // أ. الخصم من Firebase
+                // خصم الرصيد
                 await db.collection('users').doc(auth.currentUser.uid).update({
                     balance: firebase.firestore.FieldValue.increment(-total)
                 });
-
-                // ب. الإرسال التلقائي للمزود
-                const orderUrl = https://ms1.shop/api/v2?action=add&key=${API_KEY}&service=${window.selectedService.id}&link=${link}&quantity=${qty};
+                
+                // إرسال الطلب للمزود
+                const orderUrl = https://ms1.shop/api/v2?action=add&key=${API_KEY}&service=${window.selected.id}&link=${link}&quantity=${document.getElementById('orderQty').value};
                 fetch("https://api.allorigins.win/get?url=" + encodeURIComponent(orderUrl));
+                
                 alert("✅ تم تنفيذ الطلب بنجاح!");
-            } catch(e) { alert("حدث خطأ، تواصل مع الإدارة."); }
+            } catch(e) { alert("حدث خطأ تقني!"); }
             document.getElementById('orderBtn').disabled = false;
         }
     }
@@ -242,8 +219,8 @@
         el.classList.add('active');
     }
 
-    function logout() { auth.signOut().then(() => { localStorage.clear(); window.location.href="login.html"; }); }
+    function logout() { auth.signOut().then(() => { window.location.href="login.html"; }); }
 </script>
 </body>
 </html>
-                <div class="stat-card">
+                <select id="catSelect" onchange="updateServiceList()"><option>جاري جلب الخدمات...</option></select>
