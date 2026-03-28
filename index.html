@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CD-Card | خدمة إلكترونية ليبية</title>
+    <title>CD-Card | النسخة الاحترافية</title>
     
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
@@ -14,50 +14,117 @@
             --bg: #0d1117; --card: #161b22; --accent: #00ff88; --text-main: #ffffff; 
             --text-muted: #8b949e; --border: #30363d; --error: #ff4d4d;
         }
-        body { background: var(--bg); color: var(--text-main); font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; padding: 10px; padding-bottom: 100px; line-height: 1.6; }
-        .app-header { display: flex; align-items: center; justify-content: center; padding: 15px 0; background: var(--card); border-bottom: 1px solid var(--border); margin-bottom: 20px; }
-        .app-logo { width: 60px; height: 60px; background: url('cd.jpg') no-repeat center center / contain; border-radius: 50%; margin-left: 10px; }
+
+        body { 
+            background: var(--bg); color: var(--text-main); font-family: 'Segoe UI', Tahoma, sans-serif; 
+            margin: 0; padding: 10px; padding-bottom: 100px; line-height: 1.6;
+        }
+
+        /* الهيدر */
+        .app-header {
+            display: flex; align-items: center; justify-content: center;
+            padding: 15px 0; background: var(--card); border-bottom: 1px solid var(--border); margin-bottom: 20px;
+        }
+        .app-logo {
+            width: 60px; height: 60px;
+            background: url('cd.jpg') no-repeat center center / contain;
+            border-radius: 50%; margin-left: 10px; border: 2px solid var(--accent);
+        }
         .app-title { font-size: 20px; font-weight: 800; color: var(--accent); }
-        .stat-card { background: var(--card); border-radius: 16px; padding: 18px 22px; margin-bottom: 15px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+
+        /* البطاقات الإحصائية */
+        .stat-card {
+            background: var(--card); border-radius: 16px; padding: 18px 22px; margin-bottom: 15px;
+            border: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between;
+        }
         .stat-card-left { display: flex; flex-direction: column; text-align: right; }
-        .stat-card-right { width: 40px; height: 40px; border-radius: 12px; background: rgba(0,255,136,0.1); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 20px; }
-        .stat-title { font-size: 18px; font-weight: 700; color: var(--text-main); }
-        .stat-value { font-size: 11px; color: var(--text-muted); }
-        .services-section { background: var(--card); padding: 25px; border-radius: 20px; border: 1px solid var(--border); margin-bottom: 25px; }
+        .stat-card-right { 
+            width: 40px; height: 40px; border-radius: 12px; background: rgba(0,255,136,0.1); 
+            color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 20px; 
+        }
+
+        /* الأقسام */
+        .services-section { 
+            background: var(--card); padding: 25px; border-radius: 20px; border: 1px solid var(--border); margin-bottom: 25px; 
+        }
         label { display: block; margin-bottom: 10px; font-size: 14px; color: var(--accent); font-weight: 600; }
-        select, input, textarea { width: 100%; background: rgba(0,0,0,0.2); border: 1px solid var(--border); color: var(--text-main); padding: 16px; border-radius: 12px; box-sizing: border-box; outline: none; font-size: 15px; margin-bottom: 15px; }
-        .price-box { text-align: center; padding: 20px; background: rgba(0,0,0,0.3); border-radius: 15px; margin-bottom: 25px; border: 1px solid var(--accent); }
-        .btn-main { width: 100%; background: var(--accent); color: #000; border: none; padding: 18px; border-radius: 14px; font-weight: 800; cursor: pointer; font-size: 17px; }
+        select, input, textarea { 
+            width: 100%; background: rgba(0,0,0,0.2); border: 1px solid var(--border); color: var(--text-main); 
+            padding: 16px; border-radius: 12px; box-sizing: border-box; outline: none; font-size: 15px; margin-bottom: 15px;
+        }
+
+        .price-box {
+            text-align: center; padding: 20px; background: rgba(0,255,136,0.05); border-radius: 15px; 
+            margin-bottom: 25px; border: 1px solid var(--accent);
+        }
+
+        .btn-main { 
+            width: 100%; background: var(--accent); color: #000; border: none; padding: 18px; 
+            border-radius: 14px; font-weight: 800; cursor: pointer; font-size: 17px;
+        }
+
+        /* شريط التنقل */
         .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(22,27,34,0.98); display: flex; padding: 12px 0; border-top: 1px solid var(--border); z-index: 1000; }
         .nav-item { color: var(--text-muted); text-align: center; font-size: 11px; flex: 1; cursor: pointer; }
         .nav-item.active { color: var(--accent); font-weight: bold; }
         .page { display: none; } .page.active { display: block; }
-        .ref-box { background: #000; padding: 10px; border-radius: 8px; border: 1px dashed var(--accent); font-size: 12px; word-break: break-all; margin-top: 10px; color: var(--accent); }
     </style>
-</head<div class="stat-card"><div class="stat-card-left"><span id="uBalance" class="stat-title">0.00</span><span class="stat-value">دينار | الرصيد</span></div><div class="stat-card-right">💰</div></div>
+</head>
+<body>
+
+    <div class="app-header">
+        <div class="app-logo"></div>
+        <div class="app-title">CD-Card</div>
+    </div>
+
+    <div id="mainContent">
+        <div id="homePage" class="page active">
+            <div class="user-stats">
+                <div class="stat-card-left"><span id="uName" style="font-size:18px; font-weight:700;">...</span><span style="font-size:11px; color:var(--text-muted);">المستخدم</span></div>
+                    <div class="stat-card-right">👤</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-left"><span id="uBalance" style="font-size:18px; font-weight:700;">0.00</span><span style="font-size:11px; color:var(--text-muted);">دينار | الرصيد</span></div>
+                    <div class="stat-card-right">💰</div>
+                </div>
             </div>
 
             <div class="services-section">
-                <label>الفئات</label><select id="catSelect" onchange="updateServiceList()"></select>
-                <label>الخدمات</label><select id="serviceSelect" onchange="updateServiceDetails()"></select>
-                <label>الرابط / الآيدي</label><input type="text" id="orderLink" placeholder="أدخل الرابط هنا...">
-                <label>الكمية</label><input type="number" id="orderQty" oninput="calculateTotal()">
-                <div class="price-box"><span id="totalPrice" style="color:var(--accent); font-size:28px; font-weight:bold;">0.00 د.ل</span></div>
-                <button class="btn-main" onclick="submitOrder()">تأكيد الطلب ✅</button>
+                <label>الفئة</label>
+                <select id="catSelect" onchange="updateServiceList()"><option>جاري تحميل 902 خدمة...</option></select>
+                
+                <label>الخدمة</label>
+                <select id="serviceSelect" onchange="updateServiceDetails()"></select>
+                
+                <label>الرابط / الآيدي</label>
+                <input type="text" id="orderLink" placeholder="أدخل البيانات المطلوبة...">
+                
+                <label>الكمية</label>
+                <input type="number" id="orderQty" value="1" oninput="calculateTotal()">
+                
+                <div class="price-box">
+                    <small>السعر الإجمالي:</small><br>
+                    <span id="totalPrice" style="color:var(--accent); font-size:28px; font-weight:bold;">0.00 د.ل</span>
+                </div>
+                <button class="btn-main" id="orderBtn" onclick="processOrder()">تأكيد الطلب الآن ✅</button>
             </div>
         </div>
 
         <div id="rechargePage" class="page">
-            <div class="services-section"><h3>💳 شحن الرصيد</h3><div class="phone-num">0912377291</div><button class="btn-main" onclick="sendWhatsAppRecharge()">تأكيد الشحن واتساب</button></div>
+            <div class="services-section">
+                <h3 style="text-align:center; color:var(--accent);">💳 شحن الرصيد آلياً</h3>
+                <p style="text-align:center;">حول القيمة للرقم التالي:</p>
+                <div style="background:#000; padding:15px; border-radius:10px; text-align:center; color:var(--accent); font-weight:bold; border:1px solid var(--accent);">0912377291</div>
+                <br>
+                <button class="btn-main" onclick="window.open('https://wa.me/218912377291')">تأكيد الشحن عبر الواتساب 💬</button>
+            </div>
         </div>
 
         <div id="settingsPage" class="page">
             <div class="services-section">
                 <h3>⚙️ الإعدادات</h3>
-                <p>رابط الإحالة الخاص بك (شارك واربح):</p>
-                <div id="refLink" class="ref-box">جاري التحميل...</div>
-                <br>
-                <button class="btn-main" style="background:var(--error); color:#fff;" onclick="logout()">خروج</button>
+                <p>المستخدم: <span id="setUName">...</span></p>
+                <button class="btn-main" style="background:var(--error); color:#fff;" onclick="logout()">تسجيل خروج</button>
             </div>
         </div>
 
@@ -69,79 +136,102 @@
     </div>
 
 <script>
+    // 1. إعدادات Firebase
     const firebaseConfig = { apiKey: "AIzaSyARNJOPAycWU3YJdZSBN1d9uoLrvso3i4Y", authDomain: "cd-card-87365.firebaseapp.com", projectId: "cd-card-87365", storageBucket: "cd-card-87365.firebasestorage.app", messagingSenderId: "397926299412", appId: "1:397926299412:web:efbe9ae9aae29df368f401" };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore(); const auth = firebase.auth();
-
-    // تفعيل بقاء الدخول لمدة شهر
     auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
 
-    let currentUserData = {};
     const API_KEY = "c78f4c8535085a0e53ce6773681d5704017073240ee0252ec5dd17d227d8b12f";
+    let currentUserData = {};
+    let allServices = [];
 
+    // 2. مراقبة المستخدم
     auth.onAuthStateChanged(user => {
         if (user) {
             db.collection('users').doc(user.uid).onSnapshot(doc => {
                 currentUserData = doc.data();
                 document.getElementById('uName').innerText = currentUserData.username;
                 document.getElementById('uBalance').innerText = Number(currentUserData.balance).toFixed(2);
-                document.getElementById('refLink').innerText = window.location.origin + "/?ref=" + user.uid;
+                document.getElementById('setUName').innerText = currentUserData.username;
             });
             loadServicesFromAPI();
         } else { window.location.href = "login.html"; }
     });
 
+    // 3. جلب الخدمات من الـ API (توفير القراءات)
     async function loadServicesFromAPI() {
         const proxy = "https://api.allorigins.win/get?url=";
         const target = encodeURIComponent(https://ms1.shop/api/v2?action=services&key=${API_KEY});
         try {
             const res = await fetch(proxy + target);
             const data = await res.json();
-            const rawServices = JSON.parse(data.contents);
+            const raw = JSON.parse(data.contents);
             
-            window.allServices = rawServices.map(s => ({
-                id: s.service, name: s.name, category: s.category, 
-                finalPrice: (parseFloat(s.rate) * 5.5).toFixed(2) // ربحك (سعر المزود * 5.5)
-            }));
-            const cats = [...new Set(window.allServices.map(s => s.category))];
-            const catS = document.getElementById('catSelect'); catS.innerHTML = "";
-            cats.forEach(c => catS.innerHTML += <option value="${c}">${c}</option>);
+            allServices = raw.map(s => {
+                let rate = parseFloat(s.rate);
+                let cat = s.category.toLowerCase();
+                let profit = 0.15; // ربح افتراضي
+
+                if(cat.includes('ببجي') || cat.includes('ألعاب')) profit = 0.10; // 10% ألعاب
+                else if(cat.includes('متابعين') || cat.includes('رشق')) profit = 0.30; // 30% رشق
+                else if(cat.includes('اشتراك')) profit = 0.13; // 13% اشتراكات
+
+                return { id: s.service, name: s.name, category: s.category, finalPrice: (rate * (1 + profit)).toFixed(2) };
+            });
+
+            const cats = [...new Set(allServices.map(s => s.category))];
+            const catS = document.getElementById('catSelect');
+            catS.innerHTML = cats.map(c => <option value="${c}">${c}</option>).join('');
             updateServiceList();
         } catch(e) { console.error("API Error"); }
     }
 
     function updateServiceList() {
         const cat = document.getElementById('catSelect').value;
-        const sS = document.getElementById('serviceSelect'); sS.innerHTML = "";
-        window.allServices.filter(s => s.category === cat).forEach(s => sS.innerHTML += <option value="${s.id}">${s.name} - ${s.finalPrice} د.ل</option>);
+        const sS = document.getElementById('serviceSelect');
+        const filtered = allServices.filter(s => s.category === cat);
+        sS.innerHTML = filtered.map(s => <option value="${s.id}">${s.name} - ${s.finalPrice} د.ل</option>).join('');
         updateServiceDetails();
     }
 
     function updateServiceDetails() {
-        window.selectedService = window.allServices.find(s => s.id === document.getElementById('serviceSelect').value);
+        window.selectedService = allServices.find(s => s.id === document.getElementById('serviceSelect').value);
         calculateTotal();
     }
 
     function calculateTotal() {
+        if(!window.selectedService) return;
         const q = parseFloat(document.getElementById('orderQty').value) || 1;
-        const p = parseFloat(window.selectedService.finalPrice) || 0;
-        const isGame = window.selectedService.category.includes('ببجي') || window.selectedService.category.includes('فري');
-        const total = isGame ? p : (q/1000)*p;
+        const p = parseFloat(window.selectedService.finalPrice);
+        const isGame = window.selectedService.category.includes('ببجي') || window.selectedService.category.includes('ألعاب');
+        const total = isGame ? (p * q) : (q / 1000) * p;
         document.getElementById('totalPrice').innerText = total.toFixed(2) + " د.ل";
     }
 
-    async function submitOrder() {
+    // 4. تنفيذ الطلب (خصم من Firebase + إرسال للمزود)
+    async function processOrder() {
         const total = parseFloat(document.getElementById('totalPrice').innerText);
-        if(currentUserData.balance < total) return alert("❌ رصيدك لا يكفي");
-        
-        if(confirm(خصم ${total} د.ل من رصيدك؟)) {
-            await db.collection('orders').add({
-                userId: auth.currentUser.uid, serviceName: window.selectedService.name,
-                link: document.getElementById('orderLink').value, qty: document.getElementById('orderQty').value,
-                cost: total, status: "قيد الانتظار", date: new Date().toLocaleString('ar-LY')
-            });
-            await db.collection('users').doc(auth.currentUser.uid).update({ balance: firebase.firestore.FieldValue.increment(-total) });
-            alert("✅ تم الطلب");
+        const link = document.getElementById('orderLink').value;
+        const qty = document.getElementById('orderQty').value;
+
+        if (currentUserData.balance < total) return alert("❌ رصيدك لا يكفي!");
+        if (!link) return alert("❌ أدخل الآيدي!");
+
+        if (confirm(خصم ${total} د.ل وإرسال الطلب للمزود؟)) {
+            document.getElementById('orderBtn').disabled = true;
+            try {
+                // أ. الخصم من Firebase
+                await db.collection('users').doc(auth.currentUser.uid).update({
+                    balance: firebase.firestore.FieldValue.increment(-total)
+                });
+
+                // ب. الإرسال التلقائي للمزود
+                const orderUrl = https://ms1.shop/api/v2?action=add&key=${API_KEY}&service=${window.selectedService.id}&link=${link}&quantity=${qty};
+                fetch("https://api.allorigins.win/get?url=" + encodeURIComponent(orderUrl));
+                alert("✅ تم تنفيذ الطلب بنجاح!");
+            } catch(e) { alert("حدث خطأ، تواصل مع الإدارة."); }
+            document.getElementById('orderBtn').disabled = false;
         }
     }
 
@@ -156,14 +246,4 @@
 </script>
 </body>
 </html>
-<body>
-
-    <div class="app-header">
-        <div id="homePage" class="page active">
-        <div class="app-logo"></div>
-        <div class="app-title">CD-Card</div>
-    </div>
-
-    <div id="mainContent">
-            <div class="user-stats">
-                <div class="stat-card"><div class="stat-card-left"><span id="uName" class="stat-title">...</span><span class="stat-value">المستخدم</span></div><div class="stat-card-right">👤</div></div>
+                <div class="stat-card">
