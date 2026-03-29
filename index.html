@@ -3,58 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CD-Card | النسخة الاحترافية</title>
+    <title>CD-Card | خدمة إلكترونية ليبية</title>
     
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 
     <style>
-        :root { 
-            --bg: #0d1117; --card: #161b22; --accent: #00ff88; --text-main: #ffffff; 
-            --text-muted: #8b949e; --border: #30363d; --error: #ff4d4d;
-        }
-
-        body { 
-            background: var(--bg); color: var(--text-main); font-family: 'Segoe UI', Tahoma, sans-serif; 
-            margin: 0; padding: 10px; padding-bottom: 100px; line-height: 1.6;
-        }
-
-        .app-header {
-            display: flex; align-items: center; justify-content: center;
-            padding: 15px 0; background: var(--card); border-bottom: 1px solid var(--border); margin-bottom: 20px;
-        }
-        .app-logo {
-            width: 60px; height: 60px; background: url('cd.jpg') no-repeat center center / contain;
-            border-radius: 50%; margin-left: 10px; border: 2px solid var(--accent);
-        }
+        :root { --bg: #0d1117; --card: #161b22; --accent: #00ff88; --text-main: #ffffff; --text-muted: #8b949e; --border: #30363d; --error: #ff4d4d; }
+        body { background: var(--bg); color: var(--text-main); font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; padding: 10px; padding-bottom: 100px; line-height: 1.6; }
+        .app-header { display: flex; align-items: center; justify-content: center; padding: 15px 0; background: var(--card); border-bottom: 1px solid var(--border); margin-bottom: 20px; }
+        .app-logo { width: 60px; height: 60px; background: url('cd.jpg') no-repeat center center / contain; border-radius: 50%; margin-left: 10px; }
         .app-title { font-size: 20px; font-weight: 800; color: var(--accent); }
-
-        .stat-card {
-            background: var(--card); border-radius: 16px; padding: 18px 22px; margin-bottom: 15px;
-            border: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between;
-        }
-        
-        .services-section { 
-            background: var(--card); padding: 25px; border-radius: 20px; border: 1px solid var(--border); margin-bottom: 25px; 
-        }
+        .stat-card { background: var(--card); border-radius: 16px; padding: 18px 22px; margin-bottom: 15px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+        .stat-card-left { display: flex; flex-direction: column; text-align: right; }
+        .stat-card-right { width: 40px; height: 40px; border-radius: 12px; background: rgba(0,255,136,0.1); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 20px; }
+        .stat-title { font-size: 18px; font-weight: 700; color: var(--text-main); }
+        .stat-value { font-size: 11px; color: var(--text-muted); }
+        .services-section { background: var(--card); padding: 25px; border-radius: 20px; border: 1px solid var(--border); margin-bottom: 25px; }
+        .form-group { margin-bottom: 20px; }
         label { display: block; margin-bottom: 10px; font-size: 14px; color: var(--accent); font-weight: 600; }
-        select, input { 
-            width: 100%; background: rgba(0,0,0,0.2); border: 1px solid var(--border); color: var(--text-main); 
-            padding: 16px; border-radius: 12px; box-sizing: border-box; outline: none; margin-bottom: 15px;
-        }
-
-        .price-box {
-            text-align: center; padding: 20px; background: rgba(0,255,136,0.05); border-radius: 15px; 
-            margin-bottom: 25px; border: 1px solid var(--accent);
-        }
-
-        .btn-main { 
-            width: 100%; background: var(--accent); color: #000; border: none; padding: 18px; 
-            border-radius: 14px; font-weight: 800; cursor: pointer; font-size: 17px;
-        }
-
-        .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--card); display: flex; padding: 12px 0; border-top: 1px solid var(--border); z-index: 1000; }
+        select, input, textarea { width: 100%; background: rgba(0,0,0,0.2); border: 1px solid var(--border); color: var(--text-main); padding: 16px; border-radius: 12px; box-sizing: border-box; outline: none; font-size: 15px; }
+        .price-box { text-align: center; padding: 20px; background: rgba(0,0,0,0.3); border-radius: 15px; margin-bottom: 25px; border: 1px solid var(--accent); }
+        .btn-main { width: 100%; background: var(--accent); color: #000; border: none; padding: 18px; border-radius: 14px; font-weight: 800; cursor: pointer; font-size: 17px; }
+        .quran-container { text-align: center; padding: 30px; border-radius: 20px; border: 1px dashed rgba(0,255,136,0.2); margin-top: 30px; background: rgba(0,255,136,0.02); }
+        .quran-text { font-size: 110%; line-height: 2.2; color: var(--text-main); font-weight: 600; }
+        .charging-img { width: 30%; max-width: 120px; display: block; margin: 0 auto 20px; border-radius: 10px; }
+        .phone-num { background: #000; padding: 12px; border-radius: 10px; margin: 5px 0; border: 1px solid var(--accent); color: var(--accent); text-align: center; font-weight: bold; }
+        .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(22,27,34,0.98); display: flex; padding: 12px 0; border-top: 1px solid var(--border); z-index: 1000; }
         .nav-item { color: var(--text-muted); text-align: center; font-size: 11px; flex: 1; cursor: pointer; }
         .nav-item.active { color: var(--accent); font-weight: bold; }
         .page { display: none; } .page.active { display: block; }
@@ -66,149 +42,98 @@
         <div class="app-logo"></div>
         <div class="app-title">CD-Card</div>
     </div>
-
-    <div id="mainContent">
+<div id="mainContent">
         <div id="homePage" class="page active">
-            <div class="stat-card">
-                <div><span id="uName" style="font-weight:700;">جاري التحميل...</span><br><small style="color:var(--text-muted)">المستخدم</small></div>
-                <div style="text-align:left;"><span id="uBalance" style="color:var(--accent); font-weight:700;">0.00</span> د.ل<br><small style="color:var(--text-muted)">الرصيد</small></div>
+            <div class="user-stats">
+                <div class="stat-card">
+                    <div class="stat-card-left"><span id="uName" class="stat-title">...</span><span class="stat-value">اسم المستخدم</span></div>
+                    <div class="stat-card-right">👤</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-left"><span id="uBalance" class="stat-title">0.00</span><span class="stat-value">دينار ليبي | الرصيد المتوفر</span></div>
+                    <div class="stat-card-right">💰</div>
+                </div>
             </div>
 
             <div class="services-section">
-                <label>اختر الفئة</label>
-                <label>اختر الخدمة</label>
-                <select id="serviceSelect" onchange="updateServiceDetails()"></select>
-                
-                <label>الرابط / الآيدي</label>
-                <input type="text" id="orderLink" placeholder="أدخل البيانات المطلوبة...">
-                
-                <label>الكمية</label>
-                <input type="number" id="orderQty" value="1" oninput="calculateTotal()">
-                
-                <div class="price-box">
-                    <small>السعر الإجمالي:</small><br>
-                    <span id="totalPrice" style="color:var(--accent); font-size:28px; font-weight:bold;">0.00 د.ل</span>
-                </div>
-                <button class="btn-main" id="orderBtn" onclick="processOrder()">تأكيد الطلب 🚀</button>
+                <div class="form-group"><label>الفئات</label><select id="catSelect" onchange="updateServiceList()"></select></div>
+                <div class="form-group"><label>الخدمات</label><select id="serviceSelect" onchange="updateServiceDetails()"></select></div>
+                <div class="form-group"><label>الرابط / الآيدي</label><input type="text" id="orderLink" placeholder="أدخل الرابط هنا..."></div>
+                <div class="price-box"><small>السعر الإجمالي:</small><br><span id="totalPrice" style="color:var(--accent); font-size:28px; font-weight:bold;">0.00 د.ل</span></div>
+                <button class="btn-main" onclick="submitOrder()">تأكيد الطلب الآن ✅</button>
             </div>
+
+            <div class="quran-container"><div class="quran-text">اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ ۚ لَّهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ ۗ مَن ذَا الَّذِي يَشْفَعُ عِندَهُ إِلَّا بِإِذْنِهِ ۚ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ ۖ وَلَا يُحيطُونَ بِشَيْءٍ مِّنْ عِلْمِهِ إِلَّا بِمَا شَاءَ ۚ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ ۖ وَلَا يَئُودُهُ حِفْظُهُمَا ۚ وَهُوَ الْعَلِيُّ الْعَظِيمُ</div></div>
         </div>
 
         <div id="rechargePage" class="page">
-            <div class="services-section" style="text-align:center;">
-                <h3 style="color:var(--accent);">💳 شحن الرصيد</h3>
-                <p>حول القيمة للرقم التالي:</p>
-                <div style="background:#000; padding:15px; border-radius:10px; color:var(--accent); border:1px solid var(--accent);">0912377291</div>
-                <br>
-                <button class="btn-main" onclick="window.open('https://wa.me/218912377291')">تواصل لتأكيد الشحن 💬</button>
+            <div class="services-section">
+                <h3 style="text-align:center; color:var(--accent);">💳 شحن الرصيد</h3>
+                <img src="lb.jpg" alt="شعار الشحن" class="charging-img">
+                <div class="phone-num">0912377291</div>
+                <div class="form-group"><label>رقمك المحول منه</label><input type="number" id="senderPhone" placeholder="09xxxxxxxx"></div>
+                <div class="form-group"><label>القيمة (د.ل)</label><input type="number" id="chargeAmount" placeholder="0.00"></div>
+                <button class="btn-main" onclick="sendWhatsAppRecharge()">تأكيد عبر واتساب 💬</button>
             </div>
         </div>
 
-        <div id="settingsPage" class="page">
-            <div class="services-section">
-                <h3>⚙️ الإعدادات</h3>
-                <button class="btn-main" style="background:var(--error); color:#fff;" onclick="logout()">تسجيل خروج</button>
-            </div>
-        </div>
+        <div id="ordersPage" class="page"><div class="services-section"><h3>📦 طلباتي</h3><div id="ordersList"></div></div></div>
+        <div id="settingsPage" class="page"><div class="services-section"><h3>⚙️ الإعدادات</h3><button class="btn-main" style="background:var(--error); color:#fff;" onclick="auth.signOut()">خروج</button></div></div>
 
         <div class="nav-bar">
             <div class="nav-item active" onclick="nav('homePage', this)">🏠<br>الرئيسية</div>
+            <div class="nav-item" onclick="nav('ordersPage', this)">📦<br>طلباتي</div>
             <div class="nav-item" onclick="nav('rechargePage', this)">💳<br>الشحن</div>
             <div class="nav-item" onclick="nav('settingsPage', this)">⚙️<br>الإعدادات</div>
         </div>
     </div>
 
 <script>
-    // 1. إعدادات Firebase
     const firebaseConfig = { apiKey: "AIzaSyARNJOPAycWU3YJdZSBN1d9uoLrvso3i4Y", authDomain: "cd-card-87365.firebaseapp.com", projectId: "cd-card-87365", storageBucket: "cd-card-87365.firebasestorage.app", messagingSenderId: "397926299412", appId: "1:397926299412:web:efbe9ae9aae29df368f401" };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore(); const auth = firebase.auth();
-
-    const API_KEY = "c78f4c8535085a0e53ce6773681d5704017073240ee0252ec5dd17d227d8b12f";
-    let currentUserData = {};
-    let allServices = [];
-
-    // 2. التحقق من المستخدم
     auth.onAuthStateChanged(user => {
         if (user) {
             db.collection('users').doc(user.uid).onSnapshot(doc => {
-                currentUserData = doc.data();
+                currentUserData = doc.data() || {username: "مستخدم", balance: 0};
                 document.getElementById('uName').innerText = currentUserData.username;
                 document.getElementById('uBalance').innerText = Number(currentUserData.balance).toFixed(2);
             });
-            loadServicesFromAPI();
+            loadServices();
         } else { window.location.href = "login.html"; }
     });
 
-    // 3. جلب الـ 902 خدمة (بدون Firebase)
-    async function loadServicesFromAPI() {
-        const catS = document.getElementById('catSelect');
-        const proxy = "https://api.allorigins.win/get?url=";
-        const target = encodeURIComponent(https://ms1.shop/api/v2?action=services&key=${API_KEY});
+    async function loadServices() {
+        // جلب الخدمات المفعّلة فقط (isVisible: true)
+        const snap = await db.collection('services').where('isVisible', '==', true).get();
+        window.allServices = []; snap.forEach(doc => window.allServices.push({id: doc.id, ...doc.data()}));
         
-        try {
-            const res = await fetch(proxy + target);
-            const data = await res.json();
-            const raw = JSON.parse(data.contents);
-            
-            allServices = raw.map(s => {
-                let rate = parseFloat(s.rate);
-                let cat = s.category.toLowerCase();
-                let profit = 0.15;
-
-                if(cat.includes('ببجي') || cat.includes('ألعاب')) profit = 0.10;
-                else if(cat.includes('متابعين') || cat.includes('رشق')) profit = 0.30;
-                else if(cat.includes('اشتراك')) profit = 0.13;
-                    return { id: s.service, name: s.name, category: s.category, price: (rate * (1 + profit)).toFixed(2) };
-            });
-
-            const cats = [...new Set(allServices.map(s => s.category))];
-            catS.innerHTML = cats.map(c => <option value="${c}">${c}</option>).join('');
-            updateServiceList();
-        } catch(e) { catS.innerHTML = "<option>فشل في تحميل الخدمات</option>"; }
+        const cats = [...new Set(window.allServices.map(s => s.category))];
+        const catS = document.getElementById('catSelect'); catS.innerHTML = cats.map(c => <option value="${c}">${c}</option>).join('');
+        updateServiceList();
     }
 
     function updateServiceList() {
         const cat = document.getElementById('catSelect').value;
-        const filtered = allServices.filter(s => s.category === cat);
-        document.getElementById('serviceSelect').innerHTML = filtered.map(s => <option value="${s.id}">${s.name} - ${s.price} د.ل</option>).join('');
+        const sS = document.getElementById('serviceSelect');
+        const filtered = window.allServices.filter(s => s.category === cat);
+        sS.innerHTML = filtered.map(s => <option value="${s.id}">${s.name} - ${s.finalPrice} د.ل</option>).join('');
         updateServiceDetails();
     }
 
     function updateServiceDetails() {
-        window.selected = allServices.find(s => s.id === document.getElementById('serviceSelect').value);
-        calculateTotal();
+        const selected = window.allServices.find(s => s.id === document.getElementById('serviceSelect').value);
+        if(selected) { document.getElementById('totalPrice').innerText = selected.finalPrice + " د.ل"; }
     }
 
-    function calculateTotal() {
-        if(!window.selected) return;
-        const q = parseFloat(document.getElementById('orderQty').value) || 1;
-        const isGame = window.selected.category.includes('ببجي') || window.selected.category.includes('ألعاب');
-        const total = isGame ? (window.selected.price * q) : (q / 1000) * window.selected.price;
-        document.getElementById('totalPrice').innerText = total.toFixed(2) + " د.ل";
-    }
-
-    // 4. تنفيذ الطلب (Firebase للرسم + API للمزود)
-    async function processOrder() {
-        const total = parseFloat(document.getElementById('totalPrice').innerText);
-        const link = document.getElementById('orderLink').value;
-        if (currentUserData.balance < total) return alert("❌ رصيدك لا يكفي!");
-        if (!link) return alert("❌ أدخل البيانات أولاً!");
-
-        if (confirm(سيتم خصم ${total} د.ل من رصيدك. تأكيد؟)) {
-            document.getElementById('orderBtn').disabled = true;
-            try {
-                // خصم الرصيد
-                await db.collection('users').doc(auth.currentUser.uid).update({
-                    balance: firebase.firestore.FieldValue.increment(-total)
-                });
-                
-                // إرسال الطلب للمزود
-                const orderUrl = https://ms1.shop/api/v2?action=add&key=${API_KEY}&service=${window.selected.id}&link=${link}&quantity=${document.getElementById('orderQty').value};
-                fetch("https://api.allorigins.win/get?url=" + encodeURIComponent(orderUrl));
-                
-                alert("✅ تم تنفيذ الطلب بنجاح!");
-            } catch(e) { alert("حدث خطأ تقني!"); }
-            document.getElementById('orderBtn').disabled = false;
+    async function submitOrder() {
+        const selected = window.allServices.find(s => s.id === document.getElementById('serviceSelect').value);
+        if(!selected || parseFloat(currentUserData.balance) < selected.finalPrice) return alert("❌ رصيدك لا يكفي.");
+        
+        if(confirm(خصم ${selected.finalPrice} د.ل من رصيدك؟)) {
+            await db.collection('orders').add({ userId: auth.currentUser.uid, serviceName: selected.name, cost: selected.finalPrice, status: "قيد الانتظار", date: new Date().toLocaleString('ar-LY') });
+            await db.collection('users').doc(auth.currentUser.uid).update({ balance: firebase.firestore.FieldValue.increment(-selected.finalPrice) });
+            alert("✅ تم الطلب!");
         }
     }
 
@@ -218,9 +143,8 @@
         document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
         el.classList.add('active');
     }
-
-    function logout() { auth.signOut().then(() => { window.location.href="login.html"; }); }
 </script>
 </body>
 </html>
-                <select id="catSelect" onchange="updateServiceList()"><option>جاري جلب الخدمات...</option></select>
+
+    let currentUserData = {};
