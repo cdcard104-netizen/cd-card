@@ -2,50 +2,31 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>لوحة تحكم CD-CARD | التحديث اليدوي الذكي</title>
+    <title>إدارة CD-CARD | الحل النهائي</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
     <style>
-        body { background: #0d1117; color: white; font-family: sans-serif; padding: 20px; text-align: center; direction: rtl; }
-        .section { background: #161b22; padding: 20px; border-radius: 15px; border: 1px solid #30363d; margin-bottom: 25px; max-width: 800px; margin-left: auto; margin-right: auto; }
-        input, textarea { width: 90%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #30363d; background: #000; color: #fff; text-align: center; }
-        .btn { padding: 15px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; width: 100%; font-size: 16px; transition: 0.3s; margin-top: 10px; }
-        .btn-update { background: #00ff88; color: #000; }
-        .btn-manual { background: #218bff; color: #fff; }
-        .service-item { background: #0d1117; padding: 15px; margin: 10px 0; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #30363d; }
-        #status { margin-top: 15px; font-weight: bold; color: #00ff88; font-size: 14px; }
-        .badge { background: #30363d; padding: 4px 8px; border-radius: 5px; font-size: 12px; color: #8b949e; }
-        .step-box { background: rgba(0, 255, 136, 0.1); padding: 10px; border-radius: 10px; text-align: right; font-size: 13px; border-right: 4px solid #00ff88; margin-bottom: 15px; }
+        body { background: #0d1117; color: white; font-family: sans-serif; padding: 20px; text-align: center; }
+        .section { background: #161b22; padding: 20px; border-radius: 15px; border: 1px solid #30363d; margin-bottom: 25px; max-width: 600px; margin: auto; }
+        .btn { padding: 15px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; width: 100%; background: #00ff88; color: #000; font-size: 16px; }
+        #status { margin-top: 20px; padding: 10px; border-radius: 8px; background: rgba(255,255,255,0.05); font-family: monospace; }
+        .service-item { background: #0d1117; padding: 10px; margin: 5px 0; border-radius: 8px; display: flex; justify-content: space-between; border: 1px solid #30363d; font-size: 13px; }
     </style>
 </head>
 <body>
 
-    <h2>🚀 لوحة تحكم CD-CARD (تحديث يدوي)</h2>
+    <h2>🚀 إدارة متجر CD-CARD</h2>
 
     <div class="section">
-        <h3>تحديث الأسعار من المزود</h3>
-        <div class="step-box">
-            1. افتح <a href="https://ms1.shop/api/v2?key=10ce1bb69e7485eb07cd008ea5875972&action=services" target="_blank" style="color:#00ff88;">هذا الرابط</a> في صفحة جديدة.<br>
-            2. اضغط (Ctrl + A) ثم (Ctrl + C) لنسخ كل الكلام.<br>
-            3. الصق الكلام في الصندوق تحت واضغط "بدء التحديث".
-        </div>
-        <textarea id="jsonData" rows="4" placeholder="الصق كود الـ JSON هنا..."></textarea>
-        <button onclick="updateFromJSON()" id="upBtn" class="btn btn-update">بدء تحديث الخدمات والأسعار 🔄</button>
-        <div id="status">جاهز للاستلام...</div>
+        <h3>تحديث تلقائي (عبر السيرفر)</h3>
+        <p style="font-size: 12px; color: #8b949e;">هذا الزر سيجلب الخدمات مباشرة لـ Firebase</p>
+        <button onclick="forceUpdate()" id="upBtn" class="btn">ابدأ جلب الخدمات الآن 🔄</button>
+        <div id="status">في انتظار الضغط على الزر...</div>
     </div>
 
     <div class="section">
-        <h3>➕ إضافة خدمة يدوية (رصيد، بطاقات...)</h3>
-        <input type="text" id="mName" placeholder="اسم الخدمة (مثلاً: رصيد مدار 10د.ل)">
-        <input type="text" id="mCat" placeholder="الفئة (مثلاً: اتصالات ليبيا)">
-        <input type="number" id="mPrice" placeholder="السعر النهائي للزبون">
-        <button onclick="addManual()" class="btn btn-manual">حفظ الخدمة اليدوية ✅</button>
-    </div>
-
-    <div class="section">
-        <h3>البحث والتحكم في الخدمات</h3>
-        <input type="text" id="search" placeholder="ابحث عن خدمة لتفعيلها..." onkeyup="filterServices()">
-        <div id="list" style="margin-top: 20px;">جاري تحميل القائمة...</div>
+        <input type="text" id="search" placeholder="ابحث في الخدمات المضافة..." onkeyup="loadFromDB()" style="width: 90%; padding: 10px; border-radius: 8px; background: #000; color: #fff; border: 1px solid #30363d;">
+        <div id="list" style="margin-top: 15px; text-align: right;"></div>
     </div>
 
 <script>
@@ -60,87 +41,72 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // دالة التحديث اليدوي (تحل مشكلة CORS)
-    async function updateFromJSON() {
+    async function forceUpdate() {
         const status = document.getElementById('status');
-        const upBtn = document.getElementById('upBtn');
-        const jsonInput = document.getElementById('jsonData').value;
+        const btn = document.getElementById('upBtn');
+        btn.disabled = true;
+        status.innerHTML = "⌛ جاري الاتصال بالمزود (عبر AllOrigins)...";
 
-        if (!jsonInput.trim()) return alert("الرجاء لصق البيانات أولاً!");
+        const apiKey = "10ce1bb69e7485eb07cd008ea5875972";
+        const url = https://ms1.shop/api/v2?key=${apiKey}&action=services;
+        
+        try {
+            // استخدام بروكسي AllOrigins بطريقة أكثر استقراراً
+            const response = await fetch(https://api.allorigins.win/get?url=${encodeURIComponent(url)}&t=${Date.now()});
+            const json = await response.json();
+            const services = JSON.parse(json.contents);
 
-        status.innerText = "جاري المعالجة والرفع لـ Firebase... ⏳";
-        upBtn.disabled = true;try {
-            const data = JSON.parse(jsonInput);
+            if (!Array.isArray(services)) throw new Error("لم يتم استلام مصفوفة خدمات.");
+
+            status.innerHTML = ✅ تم جلب ${services.length} خدمة. جاري الرفع لـ Firebase...;
+
             let batch = db.batch();
             let count = 0;
 
-            for (const s of data) {
+            for (const s of services) {
                 const ref = db.collection('services').doc(String(s.service));
-                const finalPrice = Number((parseFloat(s.rate) * 1.3).toFixed(3)); // ربح 30%
-                
-                batch.set(ref, { 
-                    name: s.name, 
-                    category: s.category, 
-                    finalPrice: finalPrice,
-                    apiId: s.service 
+                batch.set(ref, {
+                    name: s.name,
+                    category: s.category,
+                    finalPrice: Number((parseFloat(s.rate) * 1.3).toFixed(2)),
+                    apiId: s.service
                 }, { merge: true });
 
                 count++;
-                if (count % 450 === 0) { 
-                    await batch.commit(); 
-                    batch = db.batch(); 
-                }
+                if (count % 400 === 0) {
+                    await batch.commit();
+                    batch = db.batch();
+                    status.innerHTML = ⏳ تم رفع ${count} خدمة...;}
             }
-
             await batch.commit();
-            status.innerHTML = "✅ تم بنجاح! تم تحديث " + count + " خدمة.";
-            document.getElementById('jsonData').value = "";
-            loadServices();
-        } catch(e) { 
-            status.innerHTML = "<span style='color:#ff4d4d;'>خطأ: تأكد من نسخ الكود كاملاً بشكل صحيح.</span>";
+            status.innerHTML = 🎊 مبروك! تم تحديث ${count} خدمة بنجاح.;
+            loadFromDB();
+        } catch (e) {
+            status.innerHTML = <span style="color:#ff4d4d;">❌ فشل: ${e.message}</span>;
+            console.error(e);
         } finally {
-            upBtn.disabled = false;
+            btn.disabled = false;
         }
     }
 
-    async function addManual() {
-        const n = document.getElementById('mName').value;
-        const c = document.getElementById('mCat').value;
-        const p = document.getElementById('mPrice').value;
-        if(!n  !c  !p) return alert("الرجاء ملء كافة البيانات");
-
-        await db.collection('services').add({ name: n, category: c, finalPrice: Number(p), isVisible: true, apiId: "manual" });
-        alert("تمت إضافة الخدمة اليدوية"); 
-        loadServices();
+    async function loadFromDB() {
+        const snap = await db.collection('services').limit(50).get();
+        let html = "";
+        snap.forEach(doc => {
+            const s = doc.data();
+            html += <div class="service-item">
+                <span>${s.name}</span>
+                <input type="checkbox" ${s.isVisible?'checked':''} onchange="toggle('${doc.id}', this.checked)">
+            </div>;
+        });
+        document.getElementById('list').innerHTML = html;
     }
 
-    let allServices = [];
-    async function loadServices() {
-        const snap = await db.collection('services').get();
-        allServices = [];
-        snap.forEach(doc => allServices.push({id: doc.id, ...doc.data()}));
-        render(allServices);
+    async function toggle(id, val) {
+        await db.collection('services').doc(id).update({ isVisible: val });
     }
 
-    function render(data) {
-        document.getElementById('list').innerHTML = data.map(s => 
-            <div class="service-item">
-                <div style="text-align:right;"><b>${s.name}</b> <span class="badge">${s.category}</span><br><small>${s.finalPrice} د.ل</small></div>
-                <input type="checkbox" ${s.isVisible ? 'checked' : ''} onchange="toggleVisibility('${s.id}', this.checked)" style="width:25px; height:25px;">
-            </div>
-        ).join('');
-    }
-
-    function filterServices() {
-        const val = document.getElementById('search').value.toLowerCase();
-        render(allServices.filter(s => s.name.toLowerCase().includes(val) || s.category.toLowerCase().includes(val)));
-    }
-
-    async function toggleVisibility(id, status) {
-        await db.collection('services').doc(id).update({ isVisible: status });
-    }
-
-    loadServices();
+    loadFromDB();
 </script>
 </body>
 </html>
