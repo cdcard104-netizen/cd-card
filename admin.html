@@ -2,92 +2,165 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>لوحة التحكم | CD-CARD</title>
+    <title>لوحة تحكم CD-CARD | إدارة الخدمات</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
     <style>
-        body { background: #0d1117; color: white; font-family: sans-serif; padding: 20px; text-align: center; }
-        .section { background: #161b22; padding: 20px; border-radius: 15px; border: 1px solid #30363d; margin-bottom: 25px; }
-        input { width: 90%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #30363d; background: #000; color: #fff; }
-        .btn { padding: 12px 25px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; }
+        body { background: #0d1117; color: white; font-family: sans-serif; padding: 20px; text-align: center; direction: rtl; }
+        .section { background: #161b22; padding: 20px; border-radius: 15px; border: 1px solid #30363d; margin-bottom: 25px; max-width: 800px; margin-left: auto; margin-right: auto; }
+        input { width: 90%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #30363d; background: #000; color: #fff; text-align: center; }
+        .btn { padding: 15px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; width: 100%; font-size: 16px; transition: 0.3s; }
+        .btn-update { background: #00ff88; color: #000; }
+        .btn-manual { background: #218bff; color: #fff; }
         .service-item { background: #0d1117; padding: 15px; margin: 10px 0; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #30363d; }
+        #status { margin-top: 15px; font-weight: bold; color: #00ff88; }
+        .badge { background: #30363d; padding: 4px 8px; border-radius: 5px; font-size: 12px; color: #8b949e; }
     </style>
 </head>
 <body>
 
-    <h2>إدارة CD-CARD 🚀</h2>
+    <h2>🚀 لوحة تحكم CD-CARD</h2>
 
     <div class="section">
-        <button onclick="updateFromAPI()" id="upBtn" class="btn" style="background:#00ff88; color:#000;">تحديث من ms1.shop (ربح 30%)</button>
-        <div id="status"></div>
-    </div>
-
-    <div class="section" style="border-color: #218bff;">
-        <h3>➕ إضافة خدمة يدوية</h3>
-        <input type="text" id="mName" placeholder="اسم الخدمة">
-        <input type="text" id="mCat" placeholder="الفئة">
-        <input type="number" id="mPrice" placeholder="السعر النهائي">
-        <button onclick="addManual()" class="btn" style="background:#218bff; color:#fff;">حفظ الخدمة</button>
+        <h3>جلب الخدمات من المزود</h3>
+        <button onclick="updateFromAPI()" id="upBtn" class="btn btn-update">تحديث تلقائي (ربح 30%) 🔄</button>
+        <div id="status">جاهز للجلب...</div>
     </div>
 
     <div class="section">
-        <input type="text" id="search" placeholder="ابحث في الخدمات..." onkeyup="filterServices()">
-        <div id="list">جاري التحميل...</div>
+        <h3>➕ إضافة خدمة يدوية (رصيد، بطاقات...)</h3>
+        <input type="text" id="mName" placeholder="اسم الخدمة (مثلاً: رصيد مدار 10د.ل)">
+        <input type="text" id="mCat" placeholder="الفئة (مثلاً: اتصالات ليبيا)">
+        <input type="number" id="mPrice" placeholder="السعر النهائي للزبون">
+        <button onclick="addManual()" class="btn btn-manual">حفظ الخدمة اليدوية ✅</button>
+    </div>
+
+    <div class="section">
+        <h3>البحث والتحكم في الخدمات</h3>
+        <input type="text" id="search" placeholder="ابحث عن خدمة لتفعيلها أو إخفائها..." onkeyup="filterServices()">
+        <div id="list" style="margin-top: 20px;">جاري تحميل الخدمات من قاعدة البيانات...</div>
     </div>
 
 <script>
-    const firebaseConfig = { apiKey: "AIzaSyARNJOPAycWU3YJdZSBN1d9uoLrvso3i4Y", authDomain: "cd-card-87365.firebaseapp.com", projectId: "cd-card-87365", storageBucket: "cd-card-87365.firebasestorage.app", messagingSenderId: "397926299412", appId: "1:397926299412:web:efbe9ae9aae29df368f401" };
+    // إعدادات Firebase الخاصة بك
+    const firebaseConfig = { 
+        apiKey: "AIzaSyARNJOPAycWU3YJdZSBN1d9uoLrvso3i4Y", 
+        authDomain: "cd-card-87365.firebaseapp.com", 
+        projectId: "cd-card-87365", 
+        storageBucket: "cd-card-87365.firebasestorage.app", 
+        messagingSenderId: "397926299412", 
+        appId: "1:397926299412:web:efbe9ae9aae29df368f401" 
+    };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
+    // دالة الجلب المحدثة باستخدام AllOrigins (بدون مشاكل CORS)
     async function updateFromAPI() {
         const status = document.getElementById('status');
-        status.innerText = "جاري الجلب...";
+        const upBtn = document.getElementById('upBtn');
+        status.innerText = "جاري الاتصال بالمزود... يرجى الانتظار ⏳";
+        upBtn.disabled = true;
+
+        const apiKey = "10ce1bb69e7485eb07cd008ea5875972"; // مفتاحك الجديد
+        const targetUrl = https://ms1.shop/api/v2?key=${apiKey}&action=services;
+        
         try {
-            const res = await fetch("https://cors-anywhere.herokuapp.com/https://ms1.shop/api/v2?key=bc34ac73c612e956734842221d87df60&action=services");
-            const data = await res.json();
+            const res = await fetch(https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)});
+            const json = await res.json();
+            const data = JSON.parse(json.contents);
+
+            if (!Array.isArray(data)) throw new Error("بيانات المزود غير صحيحة");
+
             let batch = db.batch();
-            data.forEach(s => {
-                const ref = db.collection('services').doc(String(s.service));
-                batch.set(ref, { name: s.name, category: s.category, finalPrice: Number((s.rate * 1.3).toFixed(2)), isVisible: false }, {merge: true});
+            let count = 0;
+
+            data.forEach(s => {const ref = db.collection('services').doc(String(s.service));
+                // حساب السعر مع ربح 30%
+                const finalPrice = Number((parseFloat(s.rate) * 1.3).toFixed(3));
+                
+                batch.set(ref, { 
+                    name: s.name, 
+                    category: s.category, 
+                    finalPrice: finalPrice,
+                    apiId: s.service 
+                    // لا نقوم بتغيير isVisible هنا لكي لا نخفي الخدمات التي فعلها المدير مسبقاً
+                }, { merge: true });
+
+                count++;
+                if (count % 450 === 0) { batch.commit(); batch = db.batch(); }
             });
+
             await batch.commit();
-            status.innerText = "✅ اكتمل التحديث";
+            status.innerHTML = "✅ اكتمل التحديث بنجاح! تم تحديث " + count + " خدمة.";
             loadServices();
-        } catch(e) { status.innerText = "خطأ: تأكد من CORS"; }
+        } catch(e) { 
+            status.innerHTML = "<span style='color:#ff4d4d;'>خطأ: " + e.message + "</span>";
+            console.error(e);
+        } finally {
+            upBtn.disabled = false;
+        }
     }
 
+    // إضافة خدمة يدوية
     async function addManual() {
         const n = document.getElementById('mName').value;
         const c = document.getElementById('mCat').value;
         const p = document.getElementById('mPrice').value;
-        await db.collection('services').add({ name: n, category: c, finalPrice: Number(p), isVisible: true });
-        alert("تمت الإضافة"); loadServices();
+        if(!n  !c  !p) return alert("الرجاء ملء كافة البيانات");
+
+        await db.collection('services').add({ 
+            name: n, 
+            category: c, 
+            finalPrice: Number(p), 
+            isVisible: true,
+            apiId: "manual"
+        });
+        alert("تمت إضافة الخدمة اليدوية بنجاح"); 
+        loadServices();
     }
 
-    let all = [];
+    let allServices = [];
+    // جلب الخدمات للعرض في لوحة التحكم
     async function loadServices() {
-        const snap = await db.collection('services').get();
-        all = []; snap.forEach(doc => all.push({id: doc.id, ...doc.data()}));
-        render(all);
+        const snap = await db.collection('services').orderBy('category').get();
+        allServices = [];
+        snap.forEach(doc => allServices.push({id: doc.id, ...doc.data()}));
+        render(allServices);
     }
 
     function render(data) {
-        document.getElementById('list').innerHTML = data.map(s => `
+        const listDiv = document.getElementById('list');
+        if(data.length === 0) { listDiv.innerHTML = "لا توجد خدمات حالياً."; return; }
+        
+        listDiv.innerHTML = data.map(s => 
             <div class="service-item">
-            <div style="text-align:right;"><b>${s.name}</b><br><small>${s.finalPrice} د.ل</small></div>
-                <input type="checkbox" ${s.isVisible?'checked':''} onchange="toggle('${s.id}', this.checked)" style="width:20px; height:20px;">
+                <div style="text-align:right;">
+                    <b>${s.name}</b> <span class="badge">${s.category}</span><br>
+                    <small style="color:#00ff88;">السعر: ${s.finalPrice} د.ل</small>
+                </div>
+                <div>
+                    <span style="font-size:11px; margin-left:10px;">${s.isVisible ? 'ظاهرة للزبون' : 'مخفية'}</span>
+                    <input type="checkbox" ${s.isVisible ? 'checked' : ''} 
+                           onchange="toggleVisibility('${s.id}', this.checked)" 
+                           style="width:25px; height:25px; cursor:pointer; vertical-align:middle;">
+                </div>
             </div>
-        `).join('');
+        ).join('');
     }
 
     function filterServices() {
-        const v = document.getElementById('search').value.toLowerCase();
-        render(all.filter(s => s.name.toLowerCase().includes(v)));
+        const val = document.getElementById('search').value.toLowerCase();
+        const filtered = allServices.filter(s => s.name.toLowerCase().includes(val) || s.category.toLowerCase().includes(val));
+        render(filtered);
     }
 
-    async function toggle(id, st) { await db.collection('services').doc(id).update({isVisible: st}); }
+    async function toggleVisibility(id, status) {
+        try {
+            await db.collection('services').doc(id).update({ isVisible: status });
+        } catch(e) { alert("خطأ في التحديث"); }
+    }
 
+    // تشغيل الجلب عند فتح الصفحة لأول مرة
     loadServices();
 </script>
 </body>
