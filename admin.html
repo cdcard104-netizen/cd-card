@@ -2,123 +2,66 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>لوحة تحكم CD-CARD | الجلب والحذف</title>
+    <title>تحديث الخدمات | CD-CARD</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-    <style>
-        body { background: #0d1117; color: white; font-family: sans-serif; padding: 20px; text-align: center; direction: rtl; }
-        .section { background: #161b22; padding: 20px; border-radius: 15px; border: 1px solid #30363d; margin-bottom: 25px; max-width: 800px; margin: auto; }
-        .btn { padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        .btn-fetch { background: #00ff88; color: #000; width: 100%; font-size: 16px; }
-        .btn-delete { background: #ff4d4d; color: white; padding: 5px 10px; font-size: 12px; }
-        .service-item { background: #0d1117; padding: 15px; margin: 10px 0; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #30363d; }
-        #status { margin: 15px 0; color: #00ff88; font-weight: bold; }
-        input#search { width: 90%; padding: 10px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #30363d; background: #000; color: #fff; }
-    </style>
 </head>
-<body>
+<body style="background: #0d1117; color: white; font-family: sans-serif; text-align: center; padding: 50px;">
 
-    <h2>🚀 إدارة خدمات CD-CARD</h2>
-
-    <div class="section">
-        <h3>1. جلب الخدمات من المزود</h3>
-        <button onclick="fetchAllServices()" id="fetchBtn" class="btn btn-fetch">تحديث وجلب كل الخدمات 🔄</button>
-        <div id="status">جاهز للعمل...</div>
-    </div>
-
-    <div class="section">
-        <h3>2. التحكم في الخدمات (حذف أو إظهار)</h3>
-        <input type="text" id="search" placeholder="ابحث عن خدمة لحذفها..." onkeyup="filterServices()">
-        <div id="list">جاري تحميل الخدمات...</div>
-    </div>
+    <h2>تحديث خدمات متجر CD-CARD 🚀</h2>
+    <p>المزود: ms1.shop | الربح المضاف: 25%</p>
+    
+    <button id="uploadBtn" style="padding: 15px 30px; background: #00ff88; border: none; border-radius: 10px; cursor: pointer; font-weight: bold;">
+        ابدأ التحديث الآن
+    </button>
+    <div id="status" style="margin-top: 25px; color: #8b949e;"></div>
 
 <script>
-    // إعدادات Firebase الخاصة بك
-    const firebaseConfig = { 
-        apiKey: "AIzaSyARNJOPAycWU3YJdZSBN1d9uoLrvso3i4Y", 
-        authDomain: "cd-card-87365.firebaseapp.com", 
-        projectId: "cd-card-87365", 
-        storageBucket: "cd-card-87365.firebasestorage.app", 
-        messagingSenderId: "397926299412", 
-        appId: "1:397926299412:web:efbe9ae9aae29df368f401" 
+    const firebaseConfig = {
+      apiKey: "AIzaSyCjQyY_mu--mX6U_J2WOmhlC14akUlpqs8",
+      authDomain: "cdcard104-a6184.firebaseapp.com",
+      projectId: "cdcard104-a6184",
+      storageBucket: "cdcard104-a6184.firebasestorage.app",
+      messagingSenderId: "250091931039",
+      appId: "1:250091931039:web:765ad3c175c184ac3ea9aa"
     };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // دالة الجلب باستخدام البروكسي المباشر
-    async function fetchAllServices() {
+    document.getElementById('uploadBtn').onclick = async () => {
         const status = document.getElementById('status');
-        status.innerText = "⏳ جاري جلب البيانات من المزود...";
-        
-        const apiKey = "10ce1bb69e7485eb07cd008ea5875972";
-        const url = https://ms1.shop/api/v2?key=${apiKey}&action=services;
+        status.innerHTML = "جاري جلب الخدمات من المزود...";
+
+        const apiKey = "65fcbb5ab3fd6a23cb48d1b7d0300a0b";
+        const proxy = "https://cors-anywhere.herokuapp.com/";
+        const apiUrl = https://ms1.shop/api/v2?key=${apiKey}&action=services;
 
         try {
-            const res = await fetch(https://api.allorigins.win/get?url=${encodeURIComponent(url)});
-            const json = await res.json();
-            const data = JSON.parse(json.contents);
-
+            const response = await fetch(proxy + apiUrl);
+            const services = await response.json();
+            
             let batch = db.batch();
             let count = 0;
 
-            for (const s of data) {
-                const ref = db.collection('services').doc(String(s.service));
-                batch.set(ref, {
+            for (const s of services) {
+                const serviceRef = db.collection('services').doc();
+                const rate = parseFloat(s.rate) || 0;
+                const finalPrice = rate * 1.25; // نسبة الربح 25%
+
+                batch.set(serviceRef, {
+                    apiId: s.service,
                     name: s.name,
                     category: s.category,
-                    finalPrice: Number((parseFloat(s.rate) * 1.3).toFixed(2)),
-                    isVisible: false // مخفية افتراضياً حتى تختارها أنت
-                }, { merge: true });
-
+                    finalPrice: Number(finalPrice.toFixed(4)),
+                    originalPrice: rate
+                });
                 count++;
-                if (count % 400 === 0) {
-                    await batch.commit();
-                    batch = db.batch();
-                }
+                if (count % 400 === 0) { await batch.commit(); batch = db.batch(); }
             }
             await batch.commit();
-            status.innerText = ✅ نجاح! تم جلب وتحديث ${count} خدمة.;
-            loadServices();
-        } catch (e) {
-            status.innerText = "❌ خطأ في الجلب: " + e.message;
-        }
-    }
-
-    let allServices = [];
-    async function loadServices() {
-        const snap = await db.collection('services').get();
-        allServices = [];
-        snap.forEach(doc => allServices.push({id: doc.id, ...doc.data()}));
-        render(allServices);
-    }
-    function render(data) {
-        document.getElementById('list').innerHTML = data.slice(0, 100).map(s => 
-            <div class="service-item">
-                <div style="text-align:right;">
-                    <b>${s.name}</b><br>
-                    <small style="color:#8b949e;">${s.category}</small>
-                </div>
-                <div>
-                    <button onclick="deleteService('${s.id}')" class="btn btn-delete">حذف 🗑️</button>
-                </div>
-            </div>
-        ).join('') + (data.length > 100 ? "<p>استخدم البحث لرؤية الباقي...</p>" : "");
-    }
-
-    async function deleteService(id) {
-        if(confirm("هل أنت متأكد من حذف هذه الخدمة نهائياً؟")) {
-            await db.collection('services').doc(id).delete();
-            alert("تم الحذف");
-            loadServices();
-        }
-    }
-
-    function filterServices() {
-        const val = document.getElementById('search').value.toLowerCase();
-        render(allServices.filter(s => s.name.toLowerCase().includes(val)));
-    }
-
-    loadServices();
+            status.innerHTML = ✅ تم تحديث ${count} خدمة بنجاح!;
+        } catch (e) { status.innerHTML = "خطأ: " + e.message; }
+    };
 </script>
 </body>
 </html>
