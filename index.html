@@ -11,93 +11,114 @@
 
     <style>
         :root { --bg: #0d1117; --card: #161b22; --accent: #00ff88; --text-main: #ffffff; --text-muted: #8b949e; --border: #30363d; --error: #ff4d4d; }
-        body { background: var(--bg); color: var(--text-main); font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; padding: 10px; padding-bottom: 100px; line-height: 1.6; }
-        .app-header { display: flex; align-items: center; justify-content: center; padding: 15px 0; background: var(--card); border-bottom: 1px solid var(--border); margin-bottom: 20px; }
-        .app-logo { width: 60px; height: 60px; background: #00ff88; border-radius: 50%; margin-left: 10px; }
-        .app-title { font-size: 20px; font-weight: 800; color: var(--accent); }
-        .stat-card { background: var(--card); border-radius: 16px; padding: 18px 22px; margin-bottom: 15px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-        .stat-card-left { display: flex; flex-direction: column; text-align: right; }
-        .stat-card-right { width: 40px; height: 40px; border-radius: 12px; background: rgba(0,255,136,0.1); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 20px; }
-        .stat-title { font-size: 18px; font-weight: 700; color: var(--text-main); }
-        .stat-value { font-size: 11px; color: var(--text-muted); }
+        body { background: var(--bg); color: var(--text-main); font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; padding-bottom: 100px; line-height: 1.6; }
+
+        /* واجهة الدخول */
+        #authSection { display: none; padding-top: 50px; text-align: center; }
+        .auth-box { background: var(--card); padding: 30px; border-radius: 25px; border: 1px solid var(--border); max-width: 380px; margin: auto; }
+
+        /* الهيدر */
+        .app-header { display: flex; align-items: center; justify-content: center; padding: 15px 0; background: var(--card); border-bottom: 1px solid var(--border); margin-bottom: 20px; border-radius: 0 0 20px 20px; }
+        .app-logo { width: 50px; height: 50px; background: var(--accent); border-radius: 50%; margin-left: 10px; }
+        .app-title { font-size: 22px; font-weight: 800; color: var(--accent); }
+
+        /* الرصيد والربح بجانب بعض */
+        .stats-row { display: flex; gap: 10px; margin-bottom: 15px; }
+        .stat-card { flex: 1; background: var(--card); border-radius: 18px; padding: 15px; border: 1px solid var(--border); text-align: center; cursor: pointer; transition: 0.3s; }
+        .stat-card:active { transform: scale(0.95); }
+        .stat-title { font-size: 16px; font-weight: 800; color: var(--accent); display: block; }
+        .stat-desc { font-size: 10px; color: var(--text-muted); }
+
         .services-section { background: var(--card); padding: 25px; border-radius: 20px; border: 1px solid var(--border); margin-bottom: 25px; }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 10px; font-size: 14px; color: var(--accent); font-weight: 600; }
-        select, input, textarea { width: 100%; background: rgba(0,0,0,0.2); border: 1px solid var(--border); color: var(--text-main); padding: 16px; border-radius: 12px; box-sizing: border-box; outline: none; font-size: 15px; }
-        .price-box { text-align: center; padding: 20px; background: rgba(0,0,0,0.3); border-radius: 15px; margin-bottom: 25px; border: 1px solid var(--accent); }
-        .btn-main { width: 100%; background: var(--accent); color: #000; border: none; padding: 18px; border-radius: 14px; font-weight: 800; cursor: pointer; font-size: 17px; }
-        .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(22,27,34,0.98); display: flex; padding: 12px 0; border-top: 1px solid var(--border); z-index: 1000; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 8px; font-size: 13px; color: var(--accent); font-weight: 600; }
+        select, input, textarea { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--border); color: #fff; padding: 14px; border-radius: 12px; box-sizing: border-box; outline: none; }
+        
+        .price-box { text-align: center; padding: 15px; background: rgba(0,255,136,0.05); border-radius: 15px; margin-bottom: 20px; border: 1px dashed var(--accent); }
+        .btn-main { width: 100%; background: var(--accent); color: #000; border: none; padding: 16px; border-radius: 14px; font-weight: 800; cursor: pointer; font-size: 16px; }
+
+        .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(22,27,34,0.95); display: flex; padding: 12px 0; border-top: 1px solid var(--border); z-index: 1000; }
         .nav-item { color: var(--text-muted); text-align: center; font-size: 11px; flex: 1; cursor: pointer; }
         .nav-item.active { color: var(--accent); font-weight: bold; }
         .page { display: none; } .page.active { display: block; }
-        .referral-box { background: #000; padding: 10px; border-radius: 10px; border: 1px dashed var(--accent); color: var(--accent); font-size: 12px; margin-top: 10px; word-break: break-all; }
     </style>
 </head>
 <body>
 
-    <div class="app-header">
-        <div class="app-logo"></div>
-        <div class="app-title">CD-CARD</div>
+    <div id="authSection">
+        <div class="auth-box" id="loginBox">
+            <h2 style="color:var(--accent)">مرحباً بك في CD-CARD</h2>
+            <p style="font-size:13px; color:var(--text-muted)">سجل دخولك للتمتع بخدماتنا</p>
+            <input type="email" id="email" placeholder="البريد الإلكتروني">
+            <input type="password" id="password" placeholder="كلمة المرور">
+            <button class="btn-main" onclick="login()">تسجيل الدخول 🔑</button>
+            <p onclick="toggleAuth()" style="font-size:12px; cursor:pointer; margin-top:15px">ليس لديك حساب؟ <span style="color:var(--accent)">أنشئ حساباً الآن</span></p>
+        </div><div class="auth-box" id="registerBox" style="display:none">
+            <h2 style="color:var(--accent)">فتح حساب جديد</h2>
+            <input type="text" id="regName" placeholder="الاسم بالكامل">
+            <input type="email" id="regEmail" placeholder="البريد الإلكتروني">
+            <input type="password" id="regPass" placeholder="كلمة المرور">
+            <button class="btn-main" onclick="register()">إنشاء الحساب ✅</button>
+            <p onclick="toggleAuth()" style="font-size:12px; cursor:pointer; margin-top:15px">لديك حساب؟ <span style="color:var(--accent)">دخول</span></p>
+        </div>
     </div>
 
-    <div id="mainContent">
-        <div id="homePage" class="page active">
-            <div class="user-stats">
-                <div class="stat-card">
-                    <div class="stat-card-left"><span id="uName" class="stat-title">...</span><span class="stat-value">اسم المستخدم</span></div><div class="stat-card-right">👤</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-card-left"><span id="uBalance" class="stat-title">0.00</span><span class="stat-value">رصيد متوفر (د.ل)</span></div>
-                    <div class="stat-card-right">💰</div>
-                </div>
-            </div>
+    <div id="mainApp" style="display:none">
+        <div class="app-header">
+            <div class="app-logo"></div>
+            <div class="app-title">CD-Card</div>
+        </div>
 
-            <div class="services-section">
-                <div class="form-group"><label>الفئات</label><select id="catSelect" onchange="updateServiceList()"></select></div>
-                <div class="form-group"><label>الخدمات</label><select id="serviceSelect" onchange="updateServiceDetails()"></select></div>
-                <div class="form-group"><label>الرابط / الآيدي</label><input type="text" id="orderLink" placeholder="أدخل البيانات المطلوبة هنا..."></div>
-                <div class="form-group"><label>الكمية</label><input type="number" id="orderQty" oninput="calculateTotal()"></div>
-                <div class="price-box"><small>السعر الإجمالي:</small><br><span id="totalPrice" style="color:var(--accent); font-size:28px; font-weight:bold;">0.00 د.ل</span></div>
-                <button class="btn-main" onclick="submitOrder()">تأكيد الطلب ✅</button>
+        <div id="homePage" class="page active">
+            <div class="container">
+                <h3 id="welcomeMsg" style="text-align:center; color:var(--accent); font-size:16px;">مرحباً بك..</h3>
+                
+                <div class="stats-row">
+                    <div class="stat-card">
+                        <span class="stat-title" id="uBalance">0.00</span>
+                        <span class="stat-desc">رصيدك الحالي (د.ل)</span>
+                    </div>
+                    <div class="stat-card" onclick="copyRef()">
+                        <span class="stat-title" style="font-size:11px;">نسخ الرابط</span>
+                        <span class="stat-desc">رابط الإحالة (ربح 4%)</span>
+                    </div>
+                </div>
+
+                <div class="services-section">
+                    <div class="form-group"><label>الفئات</label><select id="catSelect" onchange="updateServiceList()"></select></div>
+                    <div class="form-group"><label>الخدمات</label><select id="serviceSelect" onchange="updateServiceDetails()"></select></div>
+                    <div class="form-group"><label>الرابط / الآيدي</label><input type="text" id="orderLink" placeholder="أدخل الرابط هنا..."></div>
+                    <div class="form-group"><label>الكمية</label><input type="number" id="orderQty" oninput="calculateTotal()"></div>
+                    <div class="price-box"><small>السعر المطلوب:</small><br><span id="totalPrice" style="color:var(--accent); font-size:24px; font-weight:bold;">0.00 د.ل</span></div>
+                    <button class="btn-main" onclick="submitOrder()">تأكيد الطلب الآن ✅</button>
+                </div>
             </div>
         </div>
 
         <div id="rechargePage" class="page">
             <div class="services-section">
                 <h3 style="text-align:center; color:var(--accent);">💳 شحن الرصيد</h3>
-                <p style="text-align:center; font-size:14px;">حول القيمة للأرقام التالية ثم أرسل الإيصال:</p>
-                <div style="background:#000; padding:10px; border-radius:10px; margin-bottom:10px; border:1px solid var(--accent); text-align:center;">
-                    <span style="color:var(--accent)">مدار: 0912377291</span><br>
-                    <span style="color:var(--accent)">ليبيانا: 0920414760</span>
+                <div style="background:#000; padding:15px; border-radius:15px; border:1px solid var(--accent); text-align:center; margin-bottom:15px;">
+                    <p style="margin:5px 0">مدار: <b>0912377291</b></p>
+                    <p style="margin:5px 0">ليبيانا: <b>0920414760</b></p>
                 </div>
-                <div class="form-group"><label>رقمك المحول منه</label><input type="number" id="senderPhone" placeholder="09xxxxxxxx"></div>
-                <div class="form-group"><label>القيمة المحولة</label><input type="number" id="chargeAmount" placeholder="0.00"></div>
-                <button class="btn-main" onclick="sendWhatsAppRecharge()">تأكيد الشحن عبر واتساب 💬</button>
-            </div>
-        </div>
-
-        <div id="settingsPage" class="page">
-            <div class="services-section">
-                <h3>💰 نظام الأرباح (4%)</h3>
-                <p style="font-size:13px;">شارك رابطك مع أصدقائك واحصل على 4% من قيمة إيداعاتهم!</p>
-                <div id="refLink" class="referral-box">... جاري التجهيز</div>
-                <hr style="border-color:var(--border); margin:20px 0;">
-                <button class="btn-main" style="background:var(--error); color:#fff;" onclick="auth.signOut()">تسجيل الخروج</button>
+                <input type="number" id="senderPhone" placeholder="رقمك المحول منه">
+                <input type="number" id="chargeAmount" placeholder="القيمة بالدينار">
+                <button class="btn-main" style="margin-top:15px" onclick="sendWhatsAppRecharge()">إرسال الإيصال واتساب 💬</button>
             </div>
         </div>
 
         <div class="nav-bar">
             <div class="nav-item active" onclick="nav('homePage', this)">🏠<br>الرئيسية</div>
             <div class="nav-item" onclick="nav('rechargePage', this)">💳<br>الشحن</div>
-            <div class="nav-item" onclick="nav('settingsPage', this)">⚙️<br>الإعدادات</div>
+            <div class="nav-item" onclick="firebase.auth().signOut()">🚪<br>خروج</div>
         </div>
     </div>
 
 <script>
     const firebaseConfig = {
       apiKey: "AIzaSyCjQyY_mu--mX6U_J2WOmhlC14akUlpqs8",
-      authDomain: "cdcard104-a6184.firebaseapp.com",
-      projectId: "cdcard104-a6184",
+      authDomain: "cdcard104-a6184.firebaseapp.com",projectId: "cdcard104-a6184",
       storageBucket: "cdcard104-a6184.firebasestorage.app",
       messagingSenderId: "250091931039",
       appId: "1:250091931039:web:765ad3c175c184ac3ea9aa"
@@ -105,16 +126,45 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore(); const auth = firebase.auth();
 
+    let userData = {};
+
     auth.onAuthStateChanged(user => {
         if (user) {
+            document.getElementById('authSection').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'block';
             db.collection('users').doc(user.uid).onSnapshot(doc => {
-                let data = doc.data();document.getElementById('uName').innerText = data.username || "مستخدم";
-                document.getElementById('uBalance').innerText = Number(data.balance || 0).toFixed(2);
-                document.getElementById('refLink').innerText = window.location.origin + "/register.html?ref=" + user.uid;
+                userData = doc.data();
+                document.getElementById('welcomeMsg').innerText = مرحباً بك يا ${userData.username} في CD-CARD;
+                document.getElementById('uBalance').innerText = Number(userData.balance || 0).toFixed(2);
+                window.myRef = window.location.origin + window.location.pathname + "?ref=" + user.uid;
             });
             loadServices();
-        } else { window.location.href = "login.html"; }
+        } else {
+            document.getElementById('authSection').style.display = 'block';
+            document.getElementById('mainApp').style.display = 'none';
+        }
     });
+
+    async function register() {
+        const name = document.getElementById('regName').value;
+        const email = document.getElementById('regEmail').value;
+        const pass = document.getElementById('regPass').value;
+        const urlParams = new URLSearchParams(window.location.search);
+        const ref = urlParams.get('ref') || "none";
+
+        try {
+            const res = await auth.createUserWithEmailAndPassword(email, pass);
+            await db.collection('users').doc(res.user.uid).set({
+                username: name, balance: 0, spent: 0, invitedBy: ref
+            });
+        } catch (e) { alert(e.message); }
+    }
+
+    async function login() {
+        const email = document.getElementById('email').value;
+        const pass = document.getElementById('password').value;
+        try { await auth.signInWithEmailAndPassword(email, pass); } catch (e) { alert("خطأ في البيانات"); }
+    }
 
     async function loadServices() {
         const snap = await db.collection('services').get(); window.allServices = []; snap.forEach(doc => window.allServices.push({id: doc.id, ...doc.data()}));
@@ -143,14 +193,16 @@
         document.getElementById('totalPrice').innerText = total + " د.ل";
     }
 
-    function sendWhatsAppRecharge() {
-        const phone = document.getElementById('senderPhone').value;
-        const amount = document.getElementById('chargeAmount').value;
-        const msg = طلب شحن رصيد جديد%0A👤 المستخدم: ${auth.currentUser.uid}%0A📞 الرقم: ${phone}%0A💰 القيمة: ${amount} د.ل;
-        window.open(https://wa.me/218912377291?text=${msg}, '_blank');
+    function copyRef() {
+        navigator.clipboard.writeText(window.myRef);
+        alert("✅ تم نسخ رابط الإحالة الخاص بك بنجاح!");
     }
 
-    function nav(id, el) { 
+    function toggleAuth() {
+        const l = document.getElementById('loginBox'); const r = document.getElementById('registerBox');
+        l.style.display = l.style.display === 'none' ? 'block' : 'none';
+        r.style.display = r.style.display === 'none' ? 'block' : 'none';
+    }function nav(id, el) { 
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.getElementById(id).classList.add('active');
         document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
