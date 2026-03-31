@@ -2,32 +2,23 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>لوحة التحكم | CD-CARD</title>
+    <title>تحديث الخدمات | CD-CARD</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-    <style>
-        body { background: #0d1117; color: white; font-family: sans-serif; padding: 20px; text-align: center; }
-        .container { max-width: 800px; margin: auto; }
-        .btn { padding: 15px 30px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; background: #00ff88; color: #000; }
-        .status-box { background: #161b22; padding: 20px; border-radius: 15px; border: 1px solid #30363d; margin-top: 20px; }
-        .service-item { background: #161b22; padding: 10px; margin: 5px 0; border-radius: 8px; border: 1px solid #30363d; display: flex; justify-content: space-between; }
-    </style>
 </head>
-<body>
+<body style="background: #0d1117; color: white; font-family: sans-serif; text-align: center; padding: 50px;">
 
-    <div class="container">
-        <h2>إدارة خدمات CD-CARD 🚀</h2>
-        <div class="status-box">
-            <p>1. تأكد من تفعيل <a href="https://cors-anywhere.herokuapp.com/corsdemo" target="_blank" style="color:#00ff88">هذا الرابط</a> أولاً.</p>
-            <button id="updateBtn" class="btn">تحديث وجلب الخدمات الآن</button>
-            <div id="status" style="margin-top:15px; color:#8b949e;">جاهز للجلب..</div>
-        </div>
+    <h2>تحديث خدمات متجر CD-CARD 🚀</h2>
+    <p>المزود: ms1.shop | الربح المضاف: 25% | النظام: Firebase Firestore</p>
+    
+    <button id="uploadBtn" style="padding: 15px 30px; background: #00ff88; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 16px; color: #000;">
+        ابدأ جلب وتحديث الخدمات الآن
+    </button>
 
-        <div id="adminServicesList" style="margin-top:30px;">
-            </div>
-    </div>
+    <div id="status" style="margin-top: 25px; color: #8b949e; font-size: 14px; line-height: 1.6;"></div>
 
 <script>
+    // إعدادات Firebase الخاصة بمتجرك CD-CARD (تم تحديثها بناءً على صورك)
     const firebaseConfig = { 
         apiKey: "AIzaSyCjQyY_mu--mX6U_J2WOmhlC14akUlpqs8", 
         authDomain: "cdcard104-a6184.firebaseapp.com", 
@@ -39,49 +30,70 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    document.getElementById('updateBtn').onclick = async () => {
+    document.getElementById('uploadBtn').onclick = async () => {
+        const btn = document.getElementById('uploadBtn');
         const status = document.getElementById('status');
-        status.innerText = "⏳ جاري سحب البيانات من المزود...";
+        
+        btn.disabled = true;
+        status.innerHTML = "جاري الاتصال بالمزود...<br><small>تأكد من تفعيل زر CORS من الرابط المعتاد</small>";
 
-        const apiKey = "65fcbb5ab3fd6a23cb48d1b7d0300a0b";
-        const proxy = "https://cors-anywhere.herokuapp.com/";
+        // بيانات API الخاصة بك (ms1.shop)
+        const apiKey = "65fcbb5ab3fd6a23cb48d1b7d0300a0b"; 
         const apiUrl = https://ms1.shop/api/v2?key=${apiKey}&action=services;
+        const proxy = "https://cors-anywhere.herokuapp.com/";
 
         try {
             const response = await fetch(proxy + apiUrl);
             const services = await response.json();
+            
+            if (!Array.isArray(services)) {
+                throw new Error("استجابة المزود غير صحيحة، تأكد من مفتاح الـ API الخاص بك");
+            }
+
+            status.innerHTML = تم جلب ${services.length} خدمة بنجاح.<br>جاري التخزين في Firebase بربح 25%...;
+
             let batch = db.batch();
             let count = 0;
 
             for (const s of services) {
+                // نستخدم رقم الخدمة كـ ID للمستند لمنع التكرار
                 const serviceRef = db.collection('services').doc(String(s.service));
+                
+                // حساب السعر مع زيادة 25% (الضرب في 1.25)
+                const originalPrice = parseFloat(s.rate) || 0;
+                const finalPrice = originalPrice * 1.25;
+
                 batch.set(serviceRef, {
                     apiId: s.service,
                     name: s.name,
                     category: s.category,
-                    finalPrice: Number((parseFloat(s.rate) * 1.30).toFixed(3)), // ربح 30%
-                    isVisible: false
+                    min: Number(s.min) || 0,
+                    max: Number(s.max) || 0,
+                    originalPrice: Number(originalPrice.toFixed(4)),
+                    finalPrice: Number(finalPrice.toFixed(4)),
+                    type: s.type || "Default",
+                    isVisible: false // افتراضياً مخفية حتى تفعلها أنت
                 }, { merge: true });
 
                 count++;
-                if (count % 400 === 0) { await batch.commit(); batch = db.batch(); }
-            }
-            await batch.commit();
-            status.innerHTML = ✅ تم بنجاح! جلب ${count} خدمة وتخزينها.;
-            loadList();
-        } catch (e) { status.innerText = "❌ خطأ: " + e.message; }
-    };
 
-    async function loadList() {
-        const snap = await db.collection('services').limit(50).get();
-        let html = "<h3>معاينة الخدمات في القاعدة:</h3>";
-        snap.forEach(doc => {
-            const s = doc.data();
-            html += <div class="service-item"><span>${s.name}</span><b>${s.finalPrice} د.ل</b></div>;
-        });
-        document.getElementById('adminServicesList').innerHTML = html;
-    }
-    loadList();
+                // رفع الخدمات على مجموعات (كل 400 خدمة في Batch واحد)
+                if (count % 400 === 0) {
+                    await batch.commit();
+                    batch = db.batch();
+                    status.innerHTML = تم رفع ${count} خدمة... يرجى الانتظار;
+                }
+            }
+
+            await batch.commit();
+            status.innerHTML = ✅ تم بنجاح يا محمد!<br>تم تحديث ${count} خدمة في قاعدة بيانات CD-CARD بربح 25%.;
+            btn.style.background = "#218bff";
+            btn.innerText = "اكتمل التحديث بنجاح";} catch (error) {
+            console.error(error);
+            status.innerHTML = "❌ خطأ: " + error.message + "<br>تأكد من الضغط على زر التفعيل في <a href='https://cors-anywhere.herokuapp.com/corsdemo' target='_blank' style='color:#00ff88'>CORS Anywhere</a> ثم حاول مجدداً.";
+            btn.disabled = false;
+        }
+    };
 </script>
 </body>
 </html>
