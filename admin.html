@@ -9,23 +9,23 @@
 <body style="background: #0d1117; color: white; font-family: sans-serif; text-align: center; padding: 50px;">
 
     <h2>تحديث خدمات متجر CD-CARD 🚀</h2>
-    <p>المزود: ms1.shop | الربح المضاف: 25% | النظام: Firebase Firestore</p>
+    <p>المزود: ms1.shop | الربح: 30% | نوع البيانات: Number</p>
     
-    <button id="uploadBtn" style="padding: 15px 30px; background: #00ff88; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 16px; color: #000;">
+    <button id="uploadBtn" style="padding: 15px 30px; background: #00ff88; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 16px;">
         ابدأ جلب وتحديث الخدمات الآن
     </button>
 
     <div id="status" style="margin-top: 25px; color: #8b949e; font-size: 14px; line-height: 1.6;"></div>
 
 <script>
-    // إعدادات Firebase الخاصة بمتجرك CD-CARD (تم تحديثها بناءً على صورك)
+    // إعدادات Firebase الخاصة بك
     const firebaseConfig = { 
-        apiKey: "AIzaSyCjQyY_mu--mX6U_J2WOmhlC14akUlpqs8", 
-        authDomain: "cdcard104-a6184.firebaseapp.com", 
-        projectId: "cdcard104-a6184", 
-        storageBucket: "cdcard104-a6184.firebasestorage.app", 
-        messagingSenderId: "250091931039", 
-        appId: "1:250091931039:web:765ad3c175c184ac3ea9aa" 
+        apiKey: "AIzaSyARNJOPAycWU3YJdZSBN1d9uoLrvso3i4Y", 
+        authDomain: "cd-card-87365.firebaseapp.com", 
+        projectId: "cd-card-87365", 
+        storageBucket: "cd-card-87365.firebasestorage.app", 
+        messagingSenderId: "397926299412", 
+        appId: "1:397926299412:web:efbe9ae9aae29df368f401" 
     };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
@@ -35,10 +35,10 @@
         const status = document.getElementById('status');
         
         btn.disabled = true;
-        status.innerHTML = "جاري الاتصال بالمزود...<br><small>تأكد من تفعيل زر CORS من الرابط المعتاد</small>";
+        status.innerHTML = "جاري الاتصال بالمزود عبر البروكسي...<br><small>تأكد من تفعيل CORS من الرابط المعتاد</small>";
 
-        // بيانات API الخاصة بك (ms1.shop)
-        const apiKey = "65fcbb5ab3fd6a23cb48d1b7d0300a0b"; 
+        // بيانات المزود الخاصة بك التي أرسلتها
+        const apiKey = "65fcbb5ab3fd6a23cb48d1b7d0300a0b";
         const apiUrl = https://ms1.shop/api/v2?key=${apiKey}&action=services;
         const proxy = "https://cors-anywhere.herokuapp.com/";
 
@@ -47,37 +47,36 @@
             const services = await response.json();
             
             if (!Array.isArray(services)) {
-                throw new Error("استجابة المزود غير صحيحة، تأكد من مفتاح الـ API الخاص بك");
+                throw new Error("استجابة المزود غير صحيحة، تأكد من مفتاح الـ API");
             }
 
-            status.innerHTML = تم جلب ${services.length} خدمة بنجاح.<br>جاري التخزين في Firebase بربح 25%...;
+            status.innerHTML = تم جلب ${services.length} خدمة بنجاح.<br>جاري التخزين في Firebase كأرقام (Numbers)...;
 
             let batch = db.batch();
             let count = 0;
 
             for (const s of services) {
-                // نستخدم رقم الخدمة كـ ID للمستند لمنع التكرار
-                const serviceRef = db.collection('services').doc(String(s.service));
+                const serviceRef = db.collection('services').doc();
                 
-                // حساب السعر مع زيادة 25% (الضرب في 1.25)
+                // حساب السعر مع زيادة 30%
                 const originalPrice = parseFloat(s.rate) || 0;
-                const finalPrice = originalPrice * 1.25;
+                const finalPrice = originalPrice * 1.30;
 
                 batch.set(serviceRef, {
                     apiId: s.service,
                     name: s.name,
                     category: s.category,
+                    // التخزين كـ Number حصراً لحل مشكلة السعر الحقيقي
                     min: Number(s.min) || 0,
                     max: Number(s.max) || 0,
                     originalPrice: Number(originalPrice.toFixed(4)),
                     finalPrice: Number(finalPrice.toFixed(4)),
-                    type: s.type || "Default",
-                    isVisible: false // افتراضياً مخفية حتى تفعلها أنت
-                }, { merge: true });
+                    type: s.type || "Default"
+                });
 
                 count++;
 
-                // رفع الخدمات على مجموعات (كل 400 خدمة في Batch واحد)
+                // رفع الخدمات على مجموعات لتجنب ضغط الشبكة
                 if (count % 400 === 0) {
                     await batch.commit();
                     batch = db.batch();
@@ -86,11 +85,13 @@
             }
 
             await batch.commit();
-            status.innerHTML = ✅ تم بنجاح يا محمد!<br>تم تحديث ${count} خدمة في قاعدة بيانات CD-CARD بربح 25%.;
+            status.innerHTML = ✅ تم بنجاح!<br>تم رفع ${count} خدمة وتحويل قيم السعر إلى Numbers حقيقية.;
             btn.style.background = "#218bff";
-            btn.innerText = "اكتمل التحديث بنجاح";} catch (error) {
+            btn.innerText = "اكتمل التحديث";
+
+        } catch (error) {
             console.error(error);
-            status.innerHTML = "❌ خطأ: " + error.message + "<br>تأكد من الضغط على زر التفعيل في <a href='https://cors-anywhere.herokuapp.com/corsdemo' target='_blank' style='color:#00ff88'>CORS Anywhere</a> ثم حاول مجدداً.";
+            status.innerHTML = "❌ خطأ في الجلب: " + error.message + "<br>تأكد من تفعيل <a href='https://cors-anywhere.herokuapp.com/corsdemo' target='_blank' style='color:#00ff88'>CORS Anywhere</a>";
             btn.disabled = false;
         }
     };
