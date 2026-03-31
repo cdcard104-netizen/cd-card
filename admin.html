@@ -1,77 +1,87 @@
-batch.set(serviceRef, {
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>لوحة التحكم | CD-CARD</title>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <style>
+        body { background: #0d1117; color: white; font-family: sans-serif; padding: 20px; text-align: center; }
+        .container { max-width: 800px; margin: auto; }
+        .btn { padding: 15px 30px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; background: #00ff88; color: #000; }
+        .status-box { background: #161b22; padding: 20px; border-radius: 15px; border: 1px solid #30363d; margin-top: 20px; }
+        .service-item { background: #161b22; padding: 10px; margin: 5px 0; border-radius: 8px; border: 1px solid #30363d; display: flex; justify-content: space-between; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>إدارة خدمات CD-CARD 🚀</h2>
+        <div class="status-box">
+            <p>1. تأكد من تفعيل <a href="https://cors-anywhere.herokuapp.com/corsdemo" target="_blank" style="color:#00ff88">هذا الرابط</a> أولاً.</p>
+            <button id="updateBtn" class="btn">تحديث وجلب الخدمات الآن</button>
+            <div id="status" style="margin-top:15px; color:#8b949e;">جاهز للجلب..</div>
+        </div>
+
+        <div id="adminServicesList" style="margin-top:30px;">
+            </div>
+    </div>
+
+<script>
+    const firebaseConfig = { 
+        apiKey: "AIzaSyCjQyY_mu--mX6U_J2WOmhlC14akUlpqs8", 
+        authDomain: "cdcard104-a6184.firebaseapp.com", 
+        projectId: "cdcard104-a6184", 
+        storageBucket: "cdcard104-a6184.firebasestorage.app", 
+        messagingSenderId: "250091931039", 
+        appId: "1:250091931039:web:765ad3c175c184ac3ea9aa" 
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    document.getElementById('updateBtn').onclick = async () => {
+        const status = document.getElementById('status');
+        status.innerText = "⏳ جاري سحب البيانات من المزود...";
+
+        const apiKey = "65fcbb5ab3fd6a23cb48d1b7d0300a0b";
+        const proxy = "https://cors-anywhere.herokuapp.com/";
+        const apiUrl = https://ms1.shop/api/v2?key=${apiKey}&action=services;
+
+        try {
+            const response = await fetch(proxy + apiUrl);
+            const services = await response.json();
+            let batch = db.batch();
+            let count = 0;
+
+            for (const s of services) {
+                const serviceRef = db.collection('services').doc(String(s.service));
+                batch.set(serviceRef, {
                     apiId: s.service,
                     name: s.name,
                     category: s.category,
-                    finalPrice: Number(finalPrice.toFixed(3)),
-                    isVisible: false // افتراضياً لا تظهر حتى تفعلها يدوياً
+                    finalPrice: Number((parseFloat(s.rate) * 1.30).toFixed(3)), // ربح 30%
+                    isVisible: false
                 }, { merge: true });
 
                 count++;
-                // إرسال البيانات على دفعات لتجنب ضغط Firebase
-                if (count % 400 === 0) { 
-                    await batch.commit(); 
-                    batch = db.batch(); 
-                }
+                if (count % 400 === 0) { await batch.commit(); batch = db.batch(); }
             }
             await batch.commit();
-            status.innerHTML = ✅ تم بنجاح! جلب ${count} خدمة وتخزينها في قاعدة البيانات.;
-            loadAdminControl(); // تحديث القائمة المعروضة
-        } catch (e) { 
-            status.innerHTML = "❌ خطأ: " + e.message + " (تأكد من ضغط زر التفعيل في رابط CORS)"; 
-            btn.disabled = false; 
-        }
+            status.innerHTML = ✅ تم بنجاح! جلب ${count} خدمة وتخزينها.;
+            loadList();
+        } catch (e) { status.innerText = "❌ خطأ: " + e.message; }
     };
 
-    // 2. عرض الخدمات للتحكم في ظهورها
-    let allAdminServices = [];
-    async function loadAdminControl() {
-        const snap = await db.collection('services').orderBy('category').get();
-        allAdminServices = [];
-        snap.forEach(doc => allAdminServices.push({id: doc.id, ...doc.data()}));
-        renderAdminList(allAdminServices);
+    async function loadList() {
+        const snap = await db.collection('services').limit(50).get();
+        let html = "<h3>معاينة الخدمات في القاعدة:</h3>";
+        snap.forEach(doc => {
+            const s = doc.data();
+            html += <div class="service-item"><span>${s.name}</span><b>${s.finalPrice} د.ل</b></div>;
+        });
+        document.getElementById('adminServicesList').innerHTML = html;
     }
-
-    function renderAdminList(data) {
-        const list = document.getElementById('adminServicesList');
-        if (data.length === 0) {
-            list.innerHTML = "<p>لا توجد خدمات حالياً. اضغط على زر التحديث في الأعلى.</p>";
-            return;
-        }
-        list.innerHTML = data.map(s => 
-            <div class="service-item">
-                <div style="text-align:right; flex: 1;">
-                    <strong style="color:var(--accent);">${s.name}</strong><br>
-                    <small style="color:#8b949e;">${s.category} | السعر: ${s.finalPrice} د.ل</small>
-                </div>
-                <div style="margin-right: 15px;">
-                    <label style="font-size: 10px; display: block; margin-bottom: 5px;">تفعيل</label>
-                    <input type="checkbox" class="switch" ${s.isVisible ? 'checked' : ''} onchange="toggleVisibility('${s.id}', this.checked)">
-                </div>
-            </div>
-        ).join('');
-    }
-
-    // تصفية الخدمات للبحث
-    function filterAdminServices() {
-        const val = document.getElementById('adminSearch').value.toLowerCase();
-        const filtered = allAdminServices.filter(s => 
-            s.name.toLowerCase().includes(val) || 
-            s.category.toLowerCase().includes(val)
-        );
-        renderAdminList(filtered);
-    }
-
-    // تحديث حالة الظهور في Firebase
-    async function toggleVisibility(id, status) {
-        try {
-            await db.collection('services').doc(id).update({ isVisible: status });
-        } catch (e) {
-            alert("خطأ في التحديث: " + e.message);
-        }
-    }
-
-    // تحميل القائمة عند فتح الصفحة
-    loadAdminControl();
+    loadList();
 </script>
 </body>
 </html>
